@@ -1,0 +1,17 @@
+{
+  "subject": "ECON",
+  "questions": [
+    {
+      "id": "econ-001",
+      "stem": "If price rises from P1 to P2 along a linear demand curve, which area represents the change in total revenue?",
+      "image_url": "",
+      "explanation": "Revenue is P\u00d7Q. With higher P and lower Q, the change equals the rectangle labeled B.",
+      "choices": [
+        {"label":"A","text":"Area A","is_correct":false},
+        {"label":"B","text":"Area B","is_correct":true},
+        {"label":"C","text":"Area C","is_correct":false},
+        {"label":"D","text":"Area D","is_correct":false}
+      ]
+    }
+  ]
+}
