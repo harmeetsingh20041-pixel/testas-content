@@ -58,11 +58,11 @@
     }
 
     async function startCore(code){
-  // if user picks Mathematical Equations → open your module page
-  if (code === 'CORE-MATH') {
-    window.location.href = './core/math/';
-    return;
-  }
+  // Open your full-page modules
+  if (code === 'CORE-MATH') { window.location.href = './core/math/';  return; }
+  if (code === 'CORE-LAT')  { window.location.href = './core/latin/'; return; }
+
+      
 
   // existing logic for other subtests
   const url = URLS.core[code];
