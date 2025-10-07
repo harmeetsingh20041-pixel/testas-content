@@ -1,0 +1,115 @@
+{
+  "subject": {
+    "id": "sub-med",
+    "code": "MED",
+    "name": "Medicine",
+    "description": "Foundational clinical reasoning scenarios covering patient history, diagnostics, and treatment priorities.",
+    "source": "Generated test content for Supabase integration testing"
+  },
+  "testlets": [
+    {
+      "id": "med-set1-testlet-1",
+      "title": "Clinical Reasoning Set 1",
+      "intro_html": "<p>Answer each clinical question based on the patient presentation. Select the best single response.</p>",
+      "images": [
+        {
+          "id": "med-set1-testlet-1-img-hero",
+          "url": "https://images.studyco.ai/medicine/stethoscope.jpg",
+          "alt_text": "A physician using a stethoscope during a clinical examination."
+        }
+      ],
+      "questions": [
+        {
+          "id": "med-set1-testlet-1-q1",
+          "order": 1,
+          "stem_html": "<p>A 58-year-old man with long-standing hypertension presents with acute onset chest pain radiating to the back. Blood pressure is 180/100 mmHg in the right arm and 140/90 mmHg in the left arm. What is the most appropriate next diagnostic study?</p>",
+          "images": [],
+          "choices": [
+            {
+              "id": "med-set1-testlet-1-q1-choice-a",
+              "label": "A",
+              "text_html": "Chest radiograph"
+            },
+            {
+              "id": "med-set1-testlet-1-q1-choice-b",
+              "label": "B",
+              "text_html": "Transthoracic echocardiogram"
+            },
+            {
+              "id": "med-set1-testlet-1-q1-choice-c",
+              "label": "C",
+              "text_html": "CT angiography of the chest"
+            },
+            {
+              "id": "med-set1-testlet-1-q1-choice-d",
+              "label": "D",
+              "text_html": "Exercise stress test"
+            }
+          ],
+          "answer_key": "med-set1-testlet-1-q1-choice-c",
+          "explanation_html": "<p>A tearing chest pain with unequal blood pressures suggests an aortic dissection. CT angiography rapidly confirms the diagnosis and informs surgical management.</p>"
+        },
+        {
+          "id": "med-set1-testlet-1-q2",
+          "order": 2,
+          "stem_html": "<p>A 32-year-old woman presents with fever, dysuria, and flank pain. Urinalysis shows white blood cell casts. Which organism is the most likely cause?</p>",
+          "images": [],
+          "choices": [
+            {
+              "id": "med-set1-testlet-1-q2-choice-a",
+              "label": "A",
+              "text_html": "Staphylococcus saprophyticus"
+            },
+            {
+              "id": "med-set1-testlet-1-q2-choice-b",
+              "label": "B",
+              "text_html": "Escherichia coli"
+            },
+            {
+              "id": "med-set1-testlet-1-q2-choice-c",
+              "label": "C",
+              "text_html": "Proteus mirabilis"
+            },
+            {
+              "id": "med-set1-testlet-1-q2-choice-d",
+              "label": "D",
+              "text_html": "Enterococcus faecalis"
+            }
+          ],
+          "answer_key": "med-set1-testlet-1-q2-choice-b",
+          "explanation_html": "<p>Escherichia coli is the most common cause of acute pyelonephritis, especially in young sexually active women.</p>"
+        },
+        {
+          "id": "med-set1-testlet-1-q3",
+          "order": 3,
+          "stem_html": "<p>A 70-year-old woman with atrial fibrillation presents with sudden onset right lower quadrant abdominal pain and bloody diarrhea. Which vascular territory is most likely affected?</p>",
+          "images": [],
+          "choices": [
+            {
+              "id": "med-set1-testlet-1-q3-choice-a",
+              "label": "A",
+              "text_html": "Superior mesenteric artery"
+            },
+            {
+              "id": "med-set1-testlet-1-q3-choice-b",
+              "label": "B",
+              "text_html": "Inferior mesenteric artery"
+            },
+            {
+              "id": "med-set1-testlet-1-q3-choice-c",
+              "label": "C",
+              "text_html": "Celiac trunk"
+            },
+            {
+              "id": "med-set1-testlet-1-q3-choice-d",
+              "label": "D",
+              "text_html": "Internal iliac artery"
+            }
+          ],
+          "answer_key": "med-set1-testlet-1-q3-choice-a",
+          "explanation_html": "<p>Atrial fibrillation predisposes to emboli that commonly lodge in branches of the superior mesenteric artery, leading to ischemic colitis in the right colon.</p>"
+        }
+      ]
+    }
+  ]
+}
