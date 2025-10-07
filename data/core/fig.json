@@ -1,0 +1,17 @@
+{
+  "subtest": "CORE-FIG",
+  "questions": [
+    {
+      "id": "fig-001",
+      "stem": "Choose the next figure in the sequence.",
+      "image_url": "",
+      "explanation": "Pattern rotates 90\u00b0 clockwise each step.",
+      "choices": [
+        {"label":"A","text":"Option A","is_correct":false},
+        {"label":"B","text":"Option B","is_correct":true},
+        {"label":"C","text":"Option C","is_correct":false},
+        {"label":"D","text":"Option D","is_correct":false}
+      ]
+    }
+  ]
+}
