@@ -485,15 +485,45 @@
     function ensureChoices(choices = []) {
       const labels = ['A', 'B', 'C', 'D'];
       const normalized = Array.isArray(choices)
-        ? choices.slice(0, 4).map((choice, index) => ({
-            label: choice?.label ?? labels[index] ?? String.fromCharCode(65 + index),
-            text: choice?.text ?? choice?.content ?? '',
-            value:
-              choice?.value ??
-              choice?.id ??
-              choice?.label ??
-              (labels[index] ?? String.fromCharCode(65 + index)),
-          }))
+        ? choices.slice(0, 4).map((choice, index) => {
+            const fallbackLabel = labels[index] ?? String.fromCharCode(65 + index);
+
+            if (choice == null) {
+              return {
+                label: fallbackLabel,
+                text: 'Option will be added soon.',
+                value: fallbackLabel,
+              };
+            }
+
+            if (typeof choice === 'string' || typeof choice === 'number') {
+              const text = String(choice);
+              return {
+                label: fallbackLabel,
+                text,
+                value: text,
+              };
+            }
+
+            const label = choice.label ?? fallbackLabel;
+            const text =
+              choice.text ??
+              choice.content ??
+              choice.html ??
+              (typeof choice.value === 'string' ? choice.value : '');
+            const value =
+              choice.value ??
+              choice.id ??
+              choice.key ??
+              choice.label ??
+              fallbackLabel;
+
+            return {
+              label,
+              text,
+              value,
+            };
+          })
         : [];
 
       while (normalized.length < 4) {
@@ -507,6 +537,94 @@
       }
 
       return normalized;
+    }
+
+    function appendContent(target, content) {
+      if (!target || content == null) return;
+
+      const blocks = Array.isArray(content) ? content : [content];
+
+      const renderString = (value, element) => {
+        if (typeof value !== 'string') return;
+        if (HTML_PATTERN.test(value)) {
+          element.innerHTML = value;
+        } else {
+          element.textContent = value;
+        }
+      };
+
+      blocks.forEach((block) => {
+        if (block == null) return;
+
+        if (typeof block === 'string' || typeof block === 'number') {
+          const paragraph = document.createElement('p');
+          renderString(String(block), paragraph);
+          if (paragraph.textContent || paragraph.innerHTML) {
+            target.appendChild(paragraph);
+          }
+          return;
+        }
+
+        if (block instanceof Node) {
+          target.appendChild(block);
+          return;
+        }
+
+        const type = block.type ?? block.kind ?? block.format ?? '';
+
+        if (type === 'paragraph') {
+          const paragraph = document.createElement('p');
+          renderString(block.text ?? block.content ?? '', paragraph);
+          if (paragraph.textContent || paragraph.innerHTML) {
+            target.appendChild(paragraph);
+          }
+          return;
+        }
+
+        if (type === 'list') {
+          const list = document.createElement(block.ordered ? 'ol' : 'ul');
+          (block.items ?? []).forEach((item) => {
+            const li = document.createElement('li');
+            if (typeof item === 'string' || typeof item === 'number') {
+              renderString(String(item), li);
+            } else {
+              appendContent(li, item);
+            }
+            list.appendChild(li);
+          });
+          target.appendChild(list);
+          return;
+        }
+
+        if (type === 'image') {
+          const figure = document.createElement('figure');
+          const img = document.createElement('img');
+          if (block.src) img.src = block.src;
+          if (block.alt) img.alt = block.alt;
+          figure.appendChild(img);
+          if (block.caption) {
+            const caption = document.createElement('figcaption');
+            renderString(block.caption, caption);
+            figure.appendChild(caption);
+          }
+          target.appendChild(figure);
+          return;
+        }
+
+        if (block.html) {
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = block.html;
+          target.appendChild(wrapper);
+          return;
+        }
+
+        if (block.text || block.content) {
+          appendContent(target, block.text ?? block.content);
+          return;
+        }
+
+        appendContent(target, String(block));
+      });
     }
 
     function renderModule(data) {
@@ -611,10 +729,44 @@
           list.setAttribute('aria-label', 'Answer choices');
 
           const normalizedChoices = ensureChoices(question.choices);
-          const correctAnswer =
+
+          const explicitAnswer =
             normalizeAnswer(
-              question.answer ?? question.correct ?? question.correctAnswer ?? null
-            ) ?? normalizeAnswer(normalizedChoices[0]?.value);
+              question.answer ??
+                question.correct ??
+                question.correctAnswer ??
+                question.answerValue ??
+                question.correctValue ??
+                null
+            ) ??
+            (typeof question.answerLabel === 'string'
+              ? normalizeAnswer(question.answerLabel)
+              : null);
+
+          const answerIndex =
+            typeof question.answerIndex === 'number'
+              ? question.answerIndex
+              : typeof question.correctIndex === 'number'
+              ? question.correctIndex
+              : typeof question.correctOption === 'number'
+              ? question.correctOption
+              : null;
+
+          const indexAnswer =
+            answerIndex != null && normalizedChoices[answerIndex]
+              ? normalizeAnswer(
+                  normalizedChoices[answerIndex].value ??
+                    normalizedChoices[answerIndex].label
+                )
+              : null;
+
+          const fallbackAnswer = normalizedChoices.length
+            ? normalizeAnswer(
+                normalizedChoices[0].value ?? normalizedChoices[0].label
+              )
+            : null;
+
+          const correctAnswer = explicitAnswer ?? indexAnswer ?? fallbackAnswer;
           const feedback = document.createElement('div');
           feedback.className = 'feedback';
           feedback.setAttribute('role', 'status');
