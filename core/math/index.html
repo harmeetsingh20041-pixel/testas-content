@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equation System Solver</title>
+<!-- Open Graph Meta Tags for Link Sharing -->
+<meta property="og:title" content="Practice TestAS Digital Equations - Study Feeds">
+<meta property="og:description" content="Practice solving TestAS Digital mathematical equations online with Study Feeds. Free tool to build your mathematical foundation.">
+<meta property="og:image" content="https://mathematical-equations-studyfeeds.netlify.app/studyfeeds-logo (1).png">
+<meta property="og:url" content="https://mathematical-equations-studyfeeds.netlify.app/">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card (optional, but good practice) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Practice TestAS Digital Equations - Study Feeds">
+<meta name="twitter:description" content="Practice solving TestAS Digital mathematical equations online with Study Feeds. Free tool to build your mathematical foundation.">
+<meta name="twitter:image" content="https://mathematical-equations-studyfeeds.netlify.app/studyfeeds-logo (1).png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f4f4; /* Light background */
+    min-height: 100vh;
+    padding: 20px;
+}
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+    background: white;
+    padding: 30px;
+    text-align: center;
+    color: #e30613; /* Study Feeds red for text */
+    border-bottom: 4px solid #e30613;
+}
+
+        .logo {
+    height: 80px;
+    width: auto;
+    margin-bottom: 15px;
+    filter: none; /* remove shadow to keep logo clear */
+}
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .difficulty-btn.easy {
+    background: linear-gradient(135deg, #28a745, #218838); /* green */
+    color: white;
+}
+
+.difficulty-btn.medium {
+    background: linear-gradient(135deg, #ffc107, #e0a800); /* yellow/orange */
+    color: black;
+}
+
+.difficulty-btn.hard {
+    background: linear-gradient(135deg, #dc3545, #c82333); /* red */
+    color: white;
+}
+
+.difficulty-btn.expert {
+    background: linear-gradient(135deg, #343a40, #23272b); /* dark grey/black */
+    color: white;
+}
+
+        .difficulty-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .difficulty-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .problem-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4facfe;
+        }
+
+        .equations {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .equation {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f1f3f4;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .answer-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .answer-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 80px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+        }
+
+        .input-group input.correct {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .input-group input.incorrect {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+    background: linear-gradient(135deg, #e30613, #b4000f);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #ffd700, #ffcc00);
+    color: black;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ffcc00, #e30613);
+    color: black;
+}
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .feedback.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .feedback.partial {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        @media (max-width: 768px) {
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+    
+    .difficulty-selector {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .answer-inputs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Add the new styles below the media query */
+
+.difficulty-btn.test-mode {
+    background: linear-gradient(135deg, #e30613, #b4000f);
+    color: white;
+    font-size: 18px;
+    padding: 15px 30px;
+    border: 2px solid #b4000f;
+}
+.test-interface {
+    display: none;
+}
+
+.test-header {
+    background: linear-gradient(135deg, #ff6b35, #ff9a56);
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.timer.warning {
+    color: #ffeb3b;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.progress-container {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    height: 10px;
+    width: 200px;
+}
+
+.progress-bar {
+    background: white;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.question-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.bookmark-btn {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: #333;
+}
+
+.bookmark-btn.bookmarked {
+    background: linear-gradient(135deg, #ff6b35, #ff9a56);
+    color: white;
+}
+
+.results-interface {
+    display: none;
+}
+
+.results-summary {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.question-result {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #ddd;
+}
+
+.question-result.correct {
+    border-left-color: #28a745;
+}
+
+.question-result.incorrect {
+    border-left-color: #dc3545;
+}
+
+.question-result.unanswered {
+    border-left-color: #ffc107;
+}
+.question-navigation-bar {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.question-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.question-number {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #ddd;
+    background: white;
+    color: #666;
+    font-size: 14px;
+}
+
+.question-number:hover {
+    transform: scale(1.1);
+}
+
+.question-number.current {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    border-color: #4facfe;
+}
+
+.question-number.answered {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.question-number.bookmarked {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    border-color: #ff6b35;
+    color: #333;
+    position: relative;
+}
+
+.question-number.bookmarked::after {
+    content: "🔖";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 12px;
+}
+
+.question-number.bookmarked.answered {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="studyfeeds-logo (1).png" alt="Study Feeds Logo" class="logo">
+            <h1>Mathematical Equations</h1>
+            <p>Practice solving simultaneous equations for TestAS Digital - Build your mathematical foundation with StudyFeeds</p>
+        </div>
+        
+        <div class="content">
+            <div class="difficulty-selector">
+                <button class="difficulty-btn easy" onclick="setDifficulty('easy')">Easy (2 Variables)</button>
+                <button class="difficulty-btn medium" onclick="setDifficulty('medium')">Medium (3 Variables)</button>
+                <button class="difficulty-btn hard" onclick="setDifficulty('hard')">Hard (4 Variables)</button>
+                <button class="difficulty-btn expert" onclick="setDifficulty('expert')">Expert (4 Variables)</button>
+<button class="difficulty-btn test-mode" onclick="startTestSimulation()">🎯 Start Test Simulation (25 min)</button>
+            </div>
+
+            <div class="problem-section" id="problemSection" style="display: none;">
+                <h2>📝 Solve the following system of equations:</h2>
+                <div class="equations" id="equations"></div>
+                
+                <div class="answer-section">
+                    <h3>✏️ Enter your answers:</h3>
+                    <div class="answer-inputs" id="answerInputs"></div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="checkAnswers()">Check Answers</button>
+                        <button class="btn btn-primary" onclick="generateNewProblem()">New Problem</button>
+                        <button class="btn btn-warning" onclick="showSolution()">Show Solution</button>
+                    </div>
+                    
+                    <div id="feedback" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- End of problem-section -->
+
+<!-- Add Test Interface HTML here -->
+<div class="test-interface" id="testInterface">
+    <div class="test-header">
+        <div>
+            <h2>🎯 Test Simulation Mode</h2>
+            <p>Question <span id="currentQuestionNum">1</span> of 20</p>
+        </div>
+        <div class="timer" id="timer">25:00</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 5%"></div>
+        </div>
+    </div>
+<div class="question-navigation-bar">
+    <div class="question-numbers" id="questionNumbers"></div>
+</div>
+    <div class="problem-section">
+        <div class="equations" id="testEquations"></div>
+        
+        <div class="answer-section">
+            <h3>✏️ Enter your answers:</h3>
+            <div class="answer-inputs" id="testAnswerInputs"></div>
+        </div>
+    </div>
+
+    <div class="question-nav">
+        <div class="nav-buttons">
+            <button class="btn btn-primary" onclick="previousQuestion()" id="prevBtn" disabled>← Previous</button>
+            <button class="btn bookmark-btn" onclick="toggleBookmark()" id="bookmarkBtn">🔖 Bookmark</button>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Next →</button>
+            <button class="btn btn-warning" onclick="submitTest()" id="submitBtn" style="display: none;">Submit Test</button>
+        </div>
+    </div>
+</div>
+
+<div class="results-interface" id="resultsInterface">
+    <div class="results-summary" id="resultsSummary"></div>
+    <div class="results-grid" id="resultsGrid"></div>
+    <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="backToMainMenu()">Back to Main Menu</button>
+    </div>
+</div>
+    <script>
+        let currentDifficulty = '';
+        let currentSolution = {};
+        let currentVariables = [];
+
+        function setDifficulty(difficulty) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to selected button
+            document.querySelector(`.difficulty-btn.${difficulty}`).classList.add('active');
+            
+            currentDifficulty = difficulty;
+            generateNewProblem();
+        }
+
+        function generateNewProblem() {
+            if (!currentDifficulty) return;
+            
+            document.getElementById('problemSection').style.display = 'block';
+            document.getElementById('feedback').style.display = 'none';
+            
+            // Clear previous inputs
+            clearInputColors();
+            
+            let numVars;
+            switch(currentDifficulty) {
+                case 'easy': numVars = 2; break;
+                case 'medium': numVars = 3; break;
+                case 'hard': 
+                case 'expert': numVars = 4; break;
+            }
+            
+            currentVariables = Array.from({length: numVars}, (_, i) => String.fromCharCode(65 + i));
+            
+            // Generate solution first (values between 1-20)
+            currentSolution = {};
+            currentVariables.forEach(variable => {
+                currentSolution[variable] = Math.floor(Math.random() * 20) + 1;
+            });
+            
+            // Generate equations based on the solution
+            let equations = generateEquations(numVars, currentSolution);
+            
+            // Display equations
+            displayEquations(equations);
+            
+            // Create input fields
+            createInputFields();
+        }
+
+        function generateEquations(numVars, solution) {
+            let equations = [];
+            
+            for (let i = 0; i < numVars; i++) {
+                let equation = generateSingleEquation(numVars, solution, currentDifficulty, currentVariables);
+                equations.push(equation);
+            }
+            
+            return equations;
+        }
+
+        function generateSingleEquation(numVars, solution, difficulty, variables)
+ {
+    let coefficients = {};
+    
+    // Initialize all coefficients to 0 first
+    variables.forEach(variable => {
+        coefficients[variable] = 0;
+    });
+    
+    // Generate random coefficients - ensure at least 2 variables have non-zero coefficients
+    let nonZeroCount = 0;
+    variables.forEach(variable => {
+        // For the first two variables, force them to be non-zero
+        if (nonZeroCount < 2) {
+            if (difficulty === 'expert') {
+                coefficients[variable] = Math.floor(Math.random() * 10) + 1;
+                if (Math.random() < 0.3) coefficients[variable] *= -1;
+            } else {
+                coefficients[variable] = Math.floor(Math.random() * 5) + 1;
+                if (Math.random() < 0.2) coefficients[variable] *= -1;
+            }
+            nonZeroCount++;
+        } else {
+            // For remaining variables, 70% chance to be non-zero
+            if (Math.random() < 0.7) {
+                if (difficulty === 'expert') {
+                    coefficients[variable] = Math.floor(Math.random() * 10) + 1;
+                    if (Math.random() < 0.3) coefficients[variable] *= -1;
+                } else {
+                    coefficients[variable] = Math.floor(Math.random() * 5) + 1;
+                    if (Math.random() < 0.2) coefficients[variable] *= -1;
+                }
+                nonZeroCount++;
+            }
+        }
+    });
+    
+    // Calculate what the right side should be
+    let rightSide = 0;
+    variables.forEach(variable => {
+        rightSide += coefficients[variable] * solution[variable];
+    });
+    
+    // Sometimes add a constant to make it more interesting
+    let constant = 0;
+    if (Math.random() < 0.5) {
+        constant = Math.floor(Math.random() * 10) + 1;
+        if (Math.random() < 0.5) constant *= -1;
+        rightSide += constant;
+    }
+    
+    return { coefficients, constant, rightSide };
+}
+
+        function displayEquations(equations) {
+            let html = '';
+            
+            equations.forEach((eq, index) => {
+                let equationStr = '';
+                let terms = [];
+                
+                currentVariables.forEach((variable, varIndex) => {
+                    let coeff = eq.coefficients[variable];
+                    if (coeff !== 0) {
+                        let term = '';
+                        if (coeff === 1 && terms.length === 0) {
+                            term = variable;
+                        } else if (coeff === -1 && terms.length === 0) {
+                            term = '-' + variable;
+                        } else if (coeff === 1) {
+                            term = ' + ' + variable;
+                        } else if (coeff === -1) {
+                            term = ' - ' + variable;
+                        } else if (coeff > 0 && terms.length === 0) {
+                            term = coeff + variable;
+                        } else if (coeff > 0) {
+                            term = ' + ' + coeff + variable;
+                        } else {
+                            term = ' - ' + Math.abs(coeff) + variable;
+                        }
+                        terms.push(term);
+                    }
+                });
+                
+                equationStr = terms.join('');
+                
+                if (eq.constant !== 0) {
+                    if (eq.constant > 0) {
+                        equationStr += ' + ' + eq.constant;
+                    } else {
+                        equationStr += ' - ' + Math.abs(eq.constant);
+                    }
+                }
+                
+                equationStr += ' = ' + eq.rightSide;
+                
+                html += `<div class="equation">${equationStr}</div>`;
+            });
+            
+            document.getElementById('equations').innerHTML = html;
+        }
+
+        function createInputFields() {
+            let html = '';
+            
+            currentVariables.forEach(variable => {
+                html += `
+                    <div class="input-group">
+                        <label>${variable} =</label>
+                        <input type="number" id="input-${variable}" min="1" max="20" placeholder="?">
+                    </div>
+                `;
+            });
+            
+            document.getElementById('answerInputs').innerHTML = html;
+        }
+
+        function checkAnswers() {
+            let allCorrect = true;
+            let someCorrect = false;
+            
+            currentVariables.forEach(variable => {
+                let input = document.getElementById(`input-${variable}`);
+                let userAnswer = parseInt(input.value);
+                let correctAnswer = currentSolution[variable];
+                
+                if (userAnswer === correctAnswer) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    someCorrect = true;
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+            
+            showFeedback(allCorrect, someCorrect);
+        }
+
+        function showFeedback(allCorrect, someCorrect) {
+            let feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            
+            if (allCorrect) {
+                feedback.className = 'feedback success';
+                feedback.innerHTML = '🎉 Excellent! All answers are correct! 🎉';
+            } else if (someCorrect) {
+                feedback.className = 'feedback partial';
+                feedback.innerHTML = '⚡ Some answers are correct. Keep trying! ⚡';
+            } else {
+                feedback.className = 'feedback error';
+                feedback.innerHTML = '❌ No correct answers yet. Review your work and try again! ❌';
+            }
+        }
+
+        function showSolution() {
+            let solutionText = 'Solution: ';
+            let solutions = [];
+            
+            currentVariables.forEach(variable => {
+                solutions.push(`${variable} = ${currentSolution[variable]}`);
+            });
+            
+            solutionText += solutions.join(', ');
+            
+            let feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = 'feedback';
+            feedback.style.backgroundColor = '#e3f2fd';
+            feedback.style.color = '#0d47a1';
+            feedback.style.borderColor = '#2196f3';
+            feedback.innerHTML = '💡 ' + solutionText + ' 💡';
+            
+            // Also fill in the correct answers
+            currentVariables.forEach(variable => {
+                document.getElementById(`input-${variable}`).value = currentSolution[variable];
+            });
+        }
+
+        function clearInputColors() {
+            currentVariables.forEach(variable => {
+                let input = document.getElementById(`input-${variable}`);
+                if (input) {
+                    input.classList.remove('correct', 'incorrect');
+                    input.value = '';
+                }
+            });
+        }
+// Test simulation variables
+let testQuestions = [];
+let currentQuestionIndex = 0;
+let testAnswers = {};
+let bookmarkedQuestions = new Set();
+let testTimer;
+let timeRemaining = 25 * 60; // 25 minutes in seconds
+
+function startTestSimulation() {
+    // Hide main interface
+    document.querySelector('.difficulty-selector').style.display = 'none';
+    document.getElementById('problemSection').style.display = 'none';
+    
+    // Show test interface
+    document.getElementById('testInterface').style.display = 'block';
+    
+    // Generate 20 test questions
+    generateTestQuestions();
+    
+    // Initialize test
+    currentQuestionIndex = 0;
+    testAnswers = {};
+    bookmarkedQuestions.clear();
+    
+    // Start timer
+    startTimer();
+    
+    // Load first question
+    loadTestQuestion();
+createQuestionNavigationBar();
+
+}
+
+function generateTestQuestions() {
+    testQuestions = [];
+    
+    // Question distribution: 3 easy, 7 medium, 7 hard, 3 expert
+    const distribution = [
+        { difficulty: 'easy', count: 3, vars: 2 },
+        { difficulty: 'medium', count: 7, vars: 3 },
+        { difficulty: 'hard', count: 7, vars: 4 },
+        { difficulty: 'expert', count: 3, vars: 4 }
+    ];
+    
+    distribution.forEach(({ difficulty, count, vars }) => {
+        for (let i = 0; i < count; i++) {
+            let variables = Array.from({length: vars}, (_, i) => String.fromCharCode(65 + i));
+            
+            // Generate solution
+            let solution = {};
+            variables.forEach(variable => {
+                solution[variable] = Math.floor(Math.random() * 20) + 1;
+            });
+            
+            // Generate equations
+            let equations = [];
+            for (let j = 0; j < vars; j++) {
+                let equation = generateSingleEquation(vars.length, solution, difficulty, variables);
+                equations.push(equation);
+            }
+            
+            testQuestions.push({
+                difficulty,
+                variables,
+                solution,
+                equations,
+                questionNum: testQuestions.length + 1
+            });
+        }
+    });
+    
+    // Shuffle questions
+    testQuestions = testQuestions.sort(() => Math.random() - 0.5);
+}
+
+function loadTestQuestion() {
+    const question = testQuestions[currentQuestionIndex];
+    currentVariables = question.variables;
+    currentSolution = question.solution;
+    
+    // Update question number
+    document.getElementById('currentQuestionNum').textContent = currentQuestionIndex + 1;
+    
+    // Update progress bar
+    const progress = ((currentQuestionIndex + 1) / 20) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    
+    // Display equations
+    displayTestEquations(question.equations);
+    
+    // Create input fields
+    createTestInputFields();
+    
+    // Load saved answers if any
+    loadSavedAnswers();
+    
+    // Update navigation buttons
+    updateNavButtons();
+    
+    // Update bookmark button
+    updateBookmarkButton();
+updateQuestionNavigationBar();
+}
+
+function displayTestEquations(equations) {
+    let html = '';
+    
+    equations.forEach((eq) => {
+        let equationStr = '';
+        let terms = [];
+        
+        currentVariables.forEach((variable) => {
+            let coeff = eq.coefficients[variable];
+            if (coeff !== 0) {
+                let term = '';
+                if (coeff === 1 && terms.length === 0) {
+                    term = variable;
+                } else if (coeff === -1 && terms.length === 0) {
+                    term = '-' + variable;
+                } else if (coeff === 1) {
+                    term = ' + ' + variable;
+                } else if (coeff === -1) {
+                    term = ' - ' + variable;
+                } else if (coeff > 0 && terms.length === 0) {
+                    term = coeff + variable;
+                } else if (coeff > 0) {
+                    term = ' + ' + coeff + variable;
+                } else {
+                    term = ' - ' + Math.abs(coeff) + variable;
+                }
+                terms.push(term);
+            }
+        });
+        
+        equationStr = terms.join('');
+        
+        if (eq.constant !== 0) {
+            if (eq.constant > 0) {
+                equationStr += ' + ' + eq.constant;
+            } else {
+                equationStr += ' - ' + Math.abs(eq.constant);
+            }
+        }
+        
+        equationStr += ' = ' + eq.rightSide;
+        html += `<div class="equation">${equationStr}</div>`;
+    });
+    
+    document.getElementById('testEquations').innerHTML = html;
+}
+
+function createTestInputFields() {
+    let html = '';
+    
+    currentVariables.forEach(variable => {
+        html += `
+            <div class="input-group">
+                <label>${variable} =</label>
+                <input type="number" id="test-input-${variable}" min="1" max="20" placeholder="?" 
+                       onchange="saveAnswer('${variable}', this.value)">
+            </div>
+        `;
+    });
+    
+    document.getElementById('testAnswerInputs').innerHTML = html;
+}
+
+function saveAnswer(variable, value) {
+    if (!testAnswers[currentQuestionIndex]) {
+        testAnswers[currentQuestionIndex] = {};
+    }
+    testAnswers[currentQuestionIndex][variable] = value ? parseInt(value) : null;
+    
+    // Update navigation bar when answer changes
+    updateQuestionNavigationBar();
+}
+function loadSavedAnswers() {
+    const savedAnswers = testAnswers[currentQuestionIndex];
+    if (savedAnswers) {
+        currentVariables.forEach(variable => {
+            const input = document.getElementById(`test-input-${variable}`);
+            if (savedAnswers[variable] !== null && savedAnswers[variable] !== undefined) {
+                input.value = savedAnswers[variable];
+            }
+        });
+    }
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < 19) {
+        currentQuestionIndex++;
+        loadTestQuestion();
+    }
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadTestQuestion();
+    }
+}
+
+function updateNavButtons() {
+    document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+    document.getElementById('nextBtn').style.display = currentQuestionIndex === 19 ? 'none' : 'inline-block';
+    document.getElementById('submitBtn').style.display = currentQuestionIndex === 19 ? 'inline-block' : 'none';
+}
+
+function toggleBookmark() {
+    const questionNum = currentQuestionIndex;
+    if (bookmarkedQuestions.has(questionNum)) {
+        bookmarkedQuestions.delete(questionNum);
+    } else {
+        bookmarkedQuestions.add(questionNum);
+    }
+    updateBookmarkButton();
+}
+
+function updateBookmarkButton() {
+    const btn = document.getElementById('bookmarkBtn');
+    if (bookmarkedQuestions.has(currentQuestionIndex)) {
+        btn.classList.add('bookmarked');
+        btn.innerHTML = '🔖 Bookmarked';
+    } else {
+        btn.classList.remove('bookmarked');
+        btn.innerHTML = '🔖 Bookmark';
+    }
+}
+function createQuestionNavigationBar() {
+    let html = '';
+    for (let i = 0; i < 20; i++) {
+        html += `<div class="question-number" id="qnum-${i}" onclick="jumpToQuestion(${i})">${i + 1}</div>`;
+    }
+    document.getElementById('questionNumbers').innerHTML = html;
+}
+
+function jumpToQuestion(questionIndex) {
+    currentQuestionIndex = questionIndex;
+    loadTestQuestion();
+}
+
+function updateQuestionNavigationBar() {
+    // Update all question number indicators
+    for (let i = 0; i < 20; i++) {
+        const element = document.getElementById(`qnum-${i}`);
+        if (element) {
+            // Remove all classes
+            element.className = 'question-number';
+            
+            // Add current class
+            if (i === currentQuestionIndex) {
+                element.classList.add('current');
+            }
+            
+            // Add answered class if question has answers
+            const answers = testAnswers[i];
+            if (answers && Object.values(answers).some(val => val !== null && val !== undefined)) {
+                element.classList.add('answered');
+            }
+            
+            // Add bookmarked class
+            if (bookmarkedQuestions.has(i)) {
+                element.classList.add('bookmarked');
+            }
+        }
+    }
+}
+
+function startTimer() {
+    timeRemaining = 25 * 60;
+    updateTimerDisplay();
+    
+    testTimer = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+        
+        // 5 minute warning
+        if (timeRemaining === 5 * 60) {
+            document.getElementById('timer').classList.add('warning');
+            alert('⚠️ Warning: Only 5 minutes remaining!');
+        }
+        
+        // Time's up
+        if (timeRemaining <= 0) {
+            clearInterval(testTimer);
+            alert('⏰ Time\'s up! Test will be submitted automatically.');
+            submitTest();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    document.getElementById('timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function submitTest() {
+    clearInterval(testTimer);
+    
+    // Calculate results
+    let correct = 0;
+    let incorrect = 0;
+    let unanswered = 0;
+    
+    testQuestions.forEach((question, index) => {
+        const userAnswers = testAnswers[index] || {};
+        let questionCorrect = true;
+        let hasAnswers = false;
+        
+        question.variables.forEach(variable => {
+            const userAnswer = userAnswers[variable];
+            const correctAnswer = question.solution[variable];
+            
+            if (userAnswer === null || userAnswer === undefined) {
+                questionCorrect = false;
+            } else {
+                hasAnswers = true;
+                if (userAnswer !== correctAnswer) {
+                    questionCorrect = false;
+                }
+            }
+        });
+        
+        if (!hasAnswers) {
+            unanswered++;
+        } else if (questionCorrect && hasAnswers) {
+            correct++;
+        } else {
+            incorrect++;
+        }
+    });
+    
+    showResults(correct, incorrect, unanswered);
+}
+
+function showResults(correct, incorrect, unanswered) {
+    // Hide test interface
+    document.getElementById('testInterface').style.display = 'none';
+    
+    // Show results interface
+    document.getElementById('resultsInterface').style.display = 'block';
+    
+    // Create summary
+    const percentage = Math.round((correct / 20) * 100);
+    document.getElementById('resultsSummary').innerHTML = `
+        <h2>🎯 Test Completed!</h2>
+        <p style="font-size: 24px; margin: 20px 0;">Score: ${correct}/20 (${percentage}%)</p>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+            <div>✅ Correct: ${correct}</div>
+            <div>❌ Incorrect: ${incorrect}</div>
+            <div>⚪ Unanswered: ${unanswered}</div>
+        </div>
+    `;
+    
+    // Create detailed results
+    let resultsHTML = '';
+    testQuestions.forEach((question, index) => {
+        const userAnswers = testAnswers[index] || {};
+        let questionStatus = 'unanswered';
+        let hasAnswers = false;
+        let allCorrect = true;
+        
+        question.variables.forEach(variable => {
+            const userAnswer = userAnswers[variable];
+            if (userAnswer !== null && userAnswer !== undefined) {
+                hasAnswers = true;
+                if (userAnswer !== question.solution[variable]) {
+                    allCorrect = false;
+                }
+            } else {
+                allCorrect = false;
+            }
+        });
+        
+        if (hasAnswers && allCorrect) {
+            questionStatus = 'correct';
+        } else if (hasAnswers) {
+            questionStatus = 'incorrect';
+        }
+        
+        let answersHTML = '';
+        question.variables.forEach(variable => {
+            const userAnswer = userAnswers[variable] || 'Not answered';
+            const correctAnswer = question.solution[variable];
+            const isCorrect = userAnswer === correctAnswer;
+            
+            answersHTML += `
+                <div style="margin: 5px 0;">
+                    ${variable} = ${userAnswer} ${isCorrect ? '✅' : '❌'} 
+                    ${!isCorrect ? `(Correct: ${correctAnswer})` : ''}
+                </div>
+            `;
+        });
+        
+        resultsHTML += `
+            <div class="question-result ${questionStatus}">
+                <h4>Question ${index + 1} (${question.difficulty})</h4>
+                <div style="margin: 10px 0; font-size: 14px;">
+                    ${question.equations.map(eq => {
+                        let equationStr = '';
+                        let terms = [];
+                        
+                        question.variables.forEach((variable) => {
+                            let coeff = eq.coefficients[variable];
+                            if (coeff !== 0) {
+                                let term = '';
+                                if (coeff === 1 && terms.length === 0) {
+                                    term = variable;
+                                } else if (coeff === -1 && terms.length === 0) {
+                                    term = '-' + variable;
+                                } else if (coeff === 1) {
+                                    term = ' + ' + variable;
+                                } else if (coeff === -1) {
+                                    term = ' - ' + variable;
+                                } else if (coeff > 0 && terms.length === 0) {
+                                    term = coeff + variable;
+                                } else if (coeff > 0) {
+                                    term = ' + ' + coeff + variable;
+                                } else {
+                                    term = ' - ' + Math.abs(coeff) + variable;
+                                }
+                                terms.push(term);
+                            }
+                        });
+                        
+                        equationStr = terms.join('');
+                        
+                        if (eq.constant !== 0) {
+                            if (eq.constant > 0) {
+                                equationStr += ' + ' + eq.constant;
+                            } else {
+                                equationStr += ' - ' + Math.abs(eq.constant);
+                            }
+                        }
+                        
+                        return equationStr + ' = ' + eq.rightSide;
+                    }).join('<br>')}
+                </div>
+                <div style="margin-top: 10px;">
+                    ${answersHTML}
+                </div>
+                ${bookmarkedQuestions.has(index) ? '<div style="color: #ff6b35; font-weight: bold;">🔖 Bookmarked</div>' : ''}
+            </div>
+        `;
+    });
+    
+    document.getElementById('resultsGrid').innerHTML = resultsHTML;
+}
+
+function backToMainMenu() {
+    // Hide results interface
+    document.getElementById('resultsInterface').style.display = 'none';
+    
+    // Show main interface
+    document.querySelector('.difficulty-selector').style.display = 'flex';
+    
+    // Reset everything
+    testQuestions = [];
+    testAnswers = {};
+    bookmarkedQuestions.clear();
+    currentQuestionIndex = 0;
+    
+    // Remove active class from difficulty buttons
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+}
+        // Initialize with easy mode
+        window.onload = function() {
+            setDifficulty('easy');
+        };
+
+    </script>
+<!-- FOOTER START -->
+<footer style="background-color: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 2px solid #ddd; margin-top: 50px;">
+    <img src="studyfeeds-logo (1).png" alt="Study Feeds Logo" style="height: 50px; margin-bottom: 15px;">
+    
+    <div style="margin-bottom: 10px; font-size: 16px; color: #333;">
+        📧 info@studyfeeds.com
+    </div>
+    <div style="margin-bottom: 5px; font-size: 16px; color: #333;">
+        📞 9220502779 — Bachelors, TestAS and TestDaF Enquiry
+    </div>
+    <div style="margin-bottom: 15px; font-size: 16px; color: #333;">
+        📞 9212121739 — Masters Enquiry
+    </div>
+    
+    <div style="margin-bottom: 15px;">
+        <a href="https://www.facebook.com/studyfeeds/" target="_blank" style="margin: 0 8px;">
+            <img src="facebook-icon.png" alt="Facebook" style="width: 35px;">
+        </a>
+        <a href="https://www.instagram.com/studyfeeds.official/#" target="_blank" style="margin: 0 8px;">
+            <img src="instagram-icon.gif" alt="Instagram" style="width: 35px;">
+        </a>
+        <a href="https://www.linkedin.com/company/study-feeds---india/" target="_blank" style="margin: 0 8px;">
+            <img src="linkedin-icon.png" alt="LinkedIn" style="width: 35px;">
+        </a>
+        <a href="https://www.youtube.com/channel/UCE63iwDEr6zHxSz9MOJCAyQ" target="_blank" style="margin: 0 8px;">
+            <img src="youtube-icon.png" alt="YouTube" style="width: 35px;">
+        </a>
+    </div>
+    
+    <div style="font-size: 14px; color: #666;">
+        Study Feeds Copyright © 2025
+    </div>
+</footer>
+<!-- FOOTER END -->
+<elevenlabs-convai agent-id="agent_01jyyz5p0vegdbcmb3xqk8a4n1"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+</body>
+</html>
