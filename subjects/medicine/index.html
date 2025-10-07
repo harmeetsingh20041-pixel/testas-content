@@ -313,7 +313,12 @@
         console.error(error);
         document.getElementById('topicContent').innerHTML =
           '<p>We\'re unable to load the module details right now. Please try again later.</p>';
-        document.getElementById('questionList').innerHTML = '';
+        const questionList = document.getElementById('questionList');
+        questionList.innerHTML = '';
+        const message = document.createElement('p');
+        message.textContent = 'Practice questions are unavailable while we reconnect to the server.';
+        message.style.color = 'var(--muted)';
+        questionList.appendChild(message);
       }
     }
 
@@ -382,7 +387,8 @@
           const toggle = document.createElement('button');
           toggle.type = 'button';
           toggle.className = 'question-toggle';
-          toggle.setAttribute('aria-controls', `${question.id}-body`);
+          const questionId = question?.id ? String(question.id) : `question-${index + 1}`;
+          toggle.setAttribute('aria-controls', `${questionId}-body`);
           toggle.setAttribute('aria-expanded', 'false');
 
           const titleWrap = document.createElement('div');
@@ -401,13 +407,19 @@
           icon.setAttribute('height', '20');
           icon.setAttribute('viewBox', '0 0 20 20');
           icon.setAttribute('fill', 'none');
-          icon.innerHTML = '<path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+          const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          iconPath.setAttribute('d', 'M5 7.5l5 5 5-5');
+          iconPath.setAttribute('stroke', 'currentColor');
+          iconPath.setAttribute('stroke-width', '1.6');
+          iconPath.setAttribute('stroke-linecap', 'round');
+          iconPath.setAttribute('stroke-linejoin', 'round');
+          icon.appendChild(iconPath);
 
           toggle.append(titleWrap, icon);
 
           const body = document.createElement('div');
           body.className = 'question-body';
-          body.id = `${question.id}-body`;
+          body.id = `${questionId}-body`;
 
           if (question.context) {
             const context = document.createElement('div');
