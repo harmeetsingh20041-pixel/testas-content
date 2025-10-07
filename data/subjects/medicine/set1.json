@@ -1,0 +1,54 @@
+{
+  "title": "Medicine Subject Module",
+  "topic": {
+    "title": "Acute Cardiovascular and Respiratory Review",
+    "body": [
+      {
+        "type": "paragraph",
+        "text": "This module summarises key clinical observations that guide urgent decision making for cardiopulmonary emergencies. Pay attention to the patterns that link symptoms, laboratory values, and imaging." 
+      },
+      {
+        "type": "paragraph",
+        "text": "When you read the scenario, identify the organ system involved, recall the dominant physiology, and reason through the differential before selecting the response." 
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "med-001",
+      "title": "Chest pain in the emergency department",
+      "context": "<p>A 58-year-old man presents with substernal chest pain and diaphoresis that started 45 minutes ago. His ECG shows ST-segment elevation in leads II, III, and aVF.</p>",
+      "stem": "<p>Which coronary artery is most likely occluded?</p>",
+      "choices": [
+        { "label": "A", "text": "Left anterior descending artery" },
+        { "label": "B", "text": "Left circumflex artery" },
+        { "label": "C", "text": "Right coronary artery" },
+        { "label": "D", "text": "Diagonal branch" }
+      ]
+    },
+    {
+      "id": "med-002",
+      "title": "Renal physiology checkpoint",
+      "context": "<p>A nephron segment reabsorbs about 65% of the filtered sodium and water and has leaky tight junctions. It is also the site of bulk reabsorption of glucose and amino acids.</p>",
+      "stem": "<p>Identify the nephron segment described.</p>",
+      "choices": [
+        { "label": "A", "text": "Proximal convoluted tubule" },
+        { "label": "B", "text": "Thin descending limb of the loop of Henle" },
+        { "label": "C", "text": "Thick ascending limb of the loop of Henle" },
+        { "label": "D", "text": "Distal convoluted tubule" }
+      ]
+    },
+    {
+      "id": "med-003",
+      "title": "Acid–base interpretation",
+      "context": "<p>Arterial blood gas results show pH 7.28, PaCO<sub>2</sub> 55 mm Hg, and HCO<sub>3</sub><sup>-</sup> 25 mEq/L.</p>",
+      "stem": "<p>What is the primary acid–base disturbance?</p>",
+      "choices": [
+        { "label": "A", "text": "Metabolic acidosis" },
+        { "label": "B", "text": "Respiratory acidosis" },
+        { "label": "C", "text": "Metabolic alkalosis" },
+        { "label": "D", "text": "Respiratory alkalosis" }
+      ]
+    }
+  ]
+}

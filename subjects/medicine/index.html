@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medicine Subject Module | Study Feeds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --border: #d9deeb;
+      --border-strong: #c1c9dd;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --accent: #f97316;
+      --radius: 16px;
+      --transition: 0.2s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.page-header {
+      padding: clamp(20px, 3vw, 36px) clamp(16px, 4vw, 40px) 12px;
+    }
+
+    header.page-header h1 {
+      margin: 0 0 6px;
+      font-size: clamp(26px, 3.6vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    header.page-header .meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    main {
+      flex: 1;
+      padding: 0 clamp(16px, 4vw, 40px) clamp(32px, 5vw, 60px);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(20px, 3vw, 32px);
+      align-items: flex-start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    .panel header {
+      padding: 22px 26px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(249, 115, 22, 0.08), transparent 70%);
+    }
+
+    .panel header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .topic-content,
+    .question-list {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      max-height: calc(100vh - 220px);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+    }
+
+    .topic-content::-webkit-scrollbar,
+    .question-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .topic-content::-webkit-scrollbar-thumb,
+    .question-list::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+
+    .topic-content p {
+      margin: 0;
+      line-height: 1.65;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .topic-content figure,
+    .question-body figure {
+      margin: 0;
+      background: rgba(15, 23, 42, 0.03);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .topic-content img,
+    .question-body img {
+      max-width: 100%;
+      display: block;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .topic-content figcaption,
+    .question-body figcaption {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .question-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .question-toggle {
+      width: 100%;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+    }
+
+    .question-toggle:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: -3px;
+    }
+
+    .question-toggle .title {
+      text-align: left;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .question-toggle .title span {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .question-toggle .title strong {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .question-toggle svg {
+      transition: transform var(--transition);
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .question-item[aria-expanded="true"] .question-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .question-body {
+      display: none;
+      padding: 0 24px 24px;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .question-item[aria-expanded="true"] .question-body {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .question-body .context,
+    .question-body .stem {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .choices {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .choice {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: background var(--transition), border var(--transition);
+      background: rgba(248, 250, 252, 0.7);
+    }
+
+    .choice-label {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .choice-content {
+      flex: 1;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        min-height: auto;
+      }
+
+      .topic-content,
+      .question-list {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1 id="moduleTitle">Medicine Subject Module</h1>
+    <div class="meta" id="questionMeta">Loading questions…</div>
+  </header>
+  <main>
+    <div class="layout">
+      <section class="panel" aria-labelledby="topicHeading">
+        <header>
+          <h2 id="topicHeading">Topic overview</h2>
+        </header>
+        <div class="topic-content" id="topicContent"></div>
+      </section>
+      <section class="panel" aria-labelledby="questionHeading">
+        <header>
+          <h2 id="questionHeading">Practice questions</h2>
+        </header>
+        <div class="question-list" id="questionList"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const DATA_URL = "../../data/subjects/medicine/set1.json";
+
+    async function loadModule() {
+      try {
+        const response = await fetch(DATA_URL);
+        if (!response.ok) {
+          throw new Error(`Unable to load module data: ${response.status}`);
+        }
+        const data = await response.json();
+        renderModule(data);
+      } catch (error) {
+        console.error(error);
+        document.getElementById('topicContent').innerHTML =
+          '<p>We\'re unable to load the module details right now. Please try again later.</p>';
+        document.getElementById('questionList').innerHTML = '';
+        const questionMeta = document.getElementById('questionMeta');
+        if (questionMeta) {
+          questionMeta.textContent = '0 questions';
+        }
+      }
+    }
+
+    function renderModule(data) {
+      const moduleTitle = document.getElementById('moduleTitle');
+      const questionMeta = document.getElementById('questionMeta');
+      const topicHeading = document.getElementById('topicHeading');
+      const topicContent = document.getElementById('topicContent');
+      const questionList = document.getElementById('questionList');
+
+      moduleTitle.textContent = data.title || 'Medicine Subject Module';
+
+      const totalQuestions = Array.isArray(data.questions)
+        ? data.questions.length
+        : 0;
+      questionMeta.textContent = totalQuestions === 1 ? '1 question' : `${totalQuestions} questions`;
+
+      if (data.topic?.title) {
+        topicHeading.textContent = data.topic.title;
+      }
+
+      topicContent.innerHTML = '';
+      if (Array.isArray(data.topic?.body) && data.topic.body.length) {
+        data.topic.body.forEach((block) => {
+          if (typeof block === 'string') {
+            const p = document.createElement('p');
+            p.innerHTML = block;
+            topicContent.appendChild(p);
+            return;
+          }
+
+          if (block.type === 'paragraph') {
+            const p = document.createElement('p');
+            p.innerHTML = block.text ?? '';
+            topicContent.appendChild(p);
+          } else if (block.type === 'image' && block.src) {
+            const figure = document.createElement('figure');
+            const img = document.createElement('img');
+            img.src = block.src;
+            img.alt = block.alt ?? '';
+            figure.appendChild(img);
+            if (block.caption) {
+              const caption = document.createElement('figcaption');
+              caption.innerHTML = block.caption;
+              figure.appendChild(caption);
+            }
+            topicContent.appendChild(figure);
+          }
+        });
+      } else if (data.topic?.bodyHtml) {
+        topicContent.innerHTML = data.topic.bodyHtml;
+      } else {
+        const p = document.createElement('p');
+        p.textContent = 'Topic details will appear here once the dataset is updated.';
+        topicContent.appendChild(p);
+      }
+
+      questionList.innerHTML = '';
+      if (!Array.isArray(data.questions) || !data.questions.length) {
+        const empty = document.createElement('p');
+        empty.textContent = 'Question data is coming soon. Check back shortly!';
+        empty.style.color = 'var(--muted)';
+        questionList.appendChild(empty);
+        questionMeta.textContent = '0 questions';
+      } else {
+        data.questions.forEach((question, index) => {
+          const item = document.createElement('article');
+          item.className = 'question-item';
+          item.setAttribute('aria-expanded', 'false');
+
+          const toggle = document.createElement('button');
+          toggle.type = 'button';
+          toggle.className = 'question-toggle';
+          const questionId = question.id || `question-${index + 1}`;
+          toggle.setAttribute('aria-controls', `${questionId}-body`);
+          toggle.setAttribute('aria-expanded', 'false');
+
+          const titleWrap = document.createElement('div');
+          titleWrap.className = 'title';
+
+          const label = document.createElement('span');
+          label.textContent = `Question ${index + 1}`;
+
+          const title = document.createElement('strong');
+          title.textContent = question.title || `Question ${index + 1}`;
+
+          titleWrap.append(label, title);
+
+          const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          icon.setAttribute('width', '20');
+          icon.setAttribute('height', '20');
+          icon.setAttribute('viewBox', '0 0 20 20');
+          icon.setAttribute('fill', 'none');
+          icon.innerHTML = '<path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+
+          toggle.append(titleWrap, icon);
+
+          const body = document.createElement('div');
+          body.className = 'question-body';
+          body.id = `${questionId}-body`;
+
+          if (question.context) {
+            const context = document.createElement('div');
+            context.className = 'context';
+            context.innerHTML = question.context;
+            body.appendChild(context);
+          }
+
+          if (question.stem) {
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            stem.innerHTML = question.stem;
+            body.appendChild(stem);
+          }
+
+          if (Array.isArray(question.media)) {
+            question.media.forEach((media) => {
+              if (media.type === 'image' && media.src) {
+                const figure = document.createElement('figure');
+                const img = document.createElement('img');
+                img.src = media.src;
+                img.alt = media.alt ?? '';
+                figure.appendChild(img);
+                if (media.caption) {
+                  const caption = document.createElement('figcaption');
+                  caption.innerHTML = media.caption;
+                  figure.appendChild(caption);
+                }
+                body.appendChild(figure);
+              }
+            });
+          }
+
+          if (Array.isArray(question.choices) && question.choices.length) {
+            const list = document.createElement('ul');
+            list.className = 'choices';
+            question.choices.forEach((choice) => {
+              const row = document.createElement('li');
+              row.className = 'choice';
+
+              const choiceLabel = document.createElement('div');
+              choiceLabel.className = 'choice-label';
+              choiceLabel.textContent = choice.label ?? '';
+
+              const choiceContent = document.createElement('div');
+              choiceContent.className = 'choice-content';
+              choiceContent.innerHTML = choice.text ?? choice.content ?? '';
+
+              row.append(choiceLabel, choiceContent);
+              list.appendChild(row);
+            });
+            body.appendChild(list);
+          }
+
+          toggle.addEventListener('click', () => {
+            const expanded = item.getAttribute('aria-expanded') === 'true';
+
+            if (!expanded) {
+              document.querySelectorAll('.question-item[aria-expanded="true"]').forEach((openItem) => {
+                if (openItem !== item) {
+                  openItem.setAttribute('aria-expanded', 'false');
+                  const openToggle = openItem.querySelector('.question-toggle');
+                  openToggle?.setAttribute('aria-expanded', 'false');
+                }
+              });
+            }
+
+            item.setAttribute('aria-expanded', String(!expanded));
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            if (window.MathJax?.typesetPromise) {
+              window.MathJax.typesetPromise([body]);
+            }
+          });
+
+          item.append(toggle, body);
+          questionList.appendChild(item);
+        });
+      }
+
+      if (window.MathJax?.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadModule);
+  </script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'],
+          ['\\(', '\\)']
+        ],
+        displayMath: [
+          ['$$', '$$'],
+          ['\\[', '\\]']
+        ]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</body>
+</html>
