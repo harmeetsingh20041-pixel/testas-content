@@ -142,20 +142,15 @@
   <script type="module">
     // ====== CONFIGURE YOUR DATA LINKS HERE ======
     const URLS = {
-      modules: "RAW_URL_modules.json",
+      modules: "./data/modules.json",
       core: {
-        "CORE-FIG": "RAW_URL_core/fig.json",
-        "CORE-MATH": "RAW_URL_core/math.json",   // kept for fallback
-        "CORE-LAT": "RAW_URL_core/latin.json"    // kept for fallback
+        "CORE-FIG": "./data/core/fig.json",
+        "CORE-MATH": "./data/core/math.json",
+        "CORE-LAT": "./data/core/latin.json"
       },
       subjects: {
         // add more subject links as you create them
-        "HUMSOC": "RAW_URL_subjects/humsoc.json",
-        "LIFE":   "RAW_URL_subjects/life.json",
-        "ENG":    "RAW_URL_subjects/eng.json",
-        "MINT":   "RAW_URL_subjects/mint.json",
-        "ECON":   "RAW_URL_subjects/econ.json",
-        "MED":    "RAW_URL_subjects/med.json"
+        "ECON": "./data/subjects/econ.json"
       }
     };
 
