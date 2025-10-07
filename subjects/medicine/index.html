@@ -279,7 +279,7 @@
 <body>
   <header class="page-header">
     <h1 id="moduleTitle">Medicine Subject Module</h1>
-    <div class="meta" id="questionMeta">Loading questions…</div>
+    <div class="meta"><span id="questionCount">0</span> questions</div>
   </header>
   <main>
     <div class="layout">
@@ -314,26 +314,18 @@
         document.getElementById('topicContent').innerHTML =
           '<p>We\'re unable to load the module details right now. Please try again later.</p>';
         document.getElementById('questionList').innerHTML = '';
-        const questionMeta = document.getElementById('questionMeta');
-        if (questionMeta) {
-          questionMeta.textContent = '0 questions';
-        }
       }
     }
 
     function renderModule(data) {
       const moduleTitle = document.getElementById('moduleTitle');
-      const questionMeta = document.getElementById('questionMeta');
+      const questionCount = document.getElementById('questionCount');
       const topicHeading = document.getElementById('topicHeading');
       const topicContent = document.getElementById('topicContent');
       const questionList = document.getElementById('questionList');
 
       moduleTitle.textContent = data.title || 'Medicine Subject Module';
-
-      const totalQuestions = Array.isArray(data.questions)
-        ? data.questions.length
-        : 0;
-      questionMeta.textContent = totalQuestions === 1 ? '1 question' : `${totalQuestions} questions`;
+      questionCount.textContent = data.questions?.length ?? 0;
 
       if (data.topic?.title) {
         topicHeading.textContent = data.topic.title;
@@ -381,7 +373,6 @@
         empty.textContent = 'Question data is coming soon. Check back shortly!';
         empty.style.color = 'var(--muted)';
         questionList.appendChild(empty);
-        questionMeta.textContent = '0 questions';
       } else {
         data.questions.forEach((question, index) => {
           const item = document.createElement('article');
@@ -391,8 +382,7 @@
           const toggle = document.createElement('button');
           toggle.type = 'button';
           toggle.className = 'question-toggle';
-          const questionId = question.id || `question-${index + 1}`;
-          toggle.setAttribute('aria-controls', `${questionId}-body`);
+          toggle.setAttribute('aria-controls', `${question.id}-body`);
           toggle.setAttribute('aria-expanded', 'false');
 
           const titleWrap = document.createElement('div');
@@ -417,7 +407,7 @@
 
           const body = document.createElement('div');
           body.className = 'question-body';
-          body.id = `${questionId}-body`;
+          body.id = `${question.id}-body`;
 
           if (question.context) {
             const context = document.createElement('div');
