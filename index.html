@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TestAS Practice</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem}
+    .card{border:1px solid #ddd;border-radius:12px;padding:1rem;margin:1rem 0}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .row button{padding:.6rem .9rem}
+    .choices button{display:block;width:100%;margin:.5rem 0;padding:.75rem}
+    img{max-width:100%;margin:.5rem 0}
+    .muted{color:#666}
+  </style>
+</head>
+<body>
+  <h1>TestAS Practice</h1>
+  <div id="app" class="card">Loading…</div>
+
+  <script>
+    const URLS = {
+      modules: "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/modules.json",
+      core: {
+        "CORE-FIG": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/fig.json",
+        "CORE-MATH": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/math.json",
+        "CORE-LAT": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/latin.json"
+      },
+      subjects: {
+        "ECON": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/subjects/econ.json"
+        // Add more subject raw URLs here later
+      }
+    };
+
+    const el = document.getElementById('app');
+    const fetchJSON = async (u)=>{ const r=await fetch(u); if(!r.ok) throw new Error('Fetch failed: '+u); return r.json(); };
+
+    async function home(){
+      const modules = await fetchJSON(URLS.modules);
+      el.innerHTML = `
+        <div class="card">
+          <h2>Core Module</h2>
+          <div class="row">
+            ${modules.core.subtests
+              .sort((a,b)=>a.order-b.order)
+              .map(s=>`<button data-core="${s.code}">${s.order}. ${s.name}</button>`).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <h2>Subject Module</h2>
+          <div class="row">
+            ${modules.subjects.map(s=>`<button data-subj="${s.code}">${s.name}</button>`).join('')}
+          </div>
+        </div>
+      `;
+      el.querySelectorAll('[data-core]').forEach(b=> b.onclick = ()=> startCore(b.dataset.core));
+      el.querySelectorAll('[data-subj]').forEach(b=> b.onclick = ()=> startSubject(b.dataset.subj));
+    }
+
+    async function startCore(code){
+      const url = URLS.core[code];
+      if(!url) return alert('Subtest not set up yet.');
+      const data = await fetchJSON(url);
+      runQuiz(data.subtest, data.questions, {mode:'core'});
+    }
+
+    async function startSubject(code){
+      const url = URLS.subjects[code];
+      if(!url) return alert('Subject not set up yet.');
+      const data = await fetchJSON(url);
+      const qs = shuffle(data.questions);
+      runQuiz(data.subject || code, qs, {mode:'subject'});
+    }
+
+    function runQuiz(title, questions, opts){
+      let i=0, correct=0, review=[];
+      render();
+
+      function render(showExp=false){
+        const q = questions[i];
+        const progress = `${i+1} / ${questions.length}`;
+        el.innerHTML = `
+          <div class="muted">${opts.mode==='core' ? 'Core' : 'Subject'} • ${title} • ${progress}</div>
+          <div class="card">
+            <p>${q.stem}</p>
+            ${q.image_url ? `<img src="${q.image_url}" alt="">` : ``}
+            <div class="choices">
+              ${q.choices.map(c=>`
+                <button data-l="${c.label}">
+                  ${c.label ? `<strong>${c.label}.</strong> `:''}${c.text}
+                </button>`).join('')}
+            </div>
+            ${showExp ? `<div class="card" style="background:#f9f9f9">
+              <strong>Explanation</strong><br>${q.explanation || '—'}
+            </div>`:''}
+          </div>`;
+
+        el.querySelectorAll('.choices button').forEach(btn=>{
+          btn.onclick = ()=>{
+            const pick = q.choices.find(x=>x.label===btn.dataset.l);
+            const ok = !!pick?.is_correct;
+            if(ok) correct++;
+            review.push({stem:q.stem, choice:pick?.label, ok, explanation:q.explanation});
+            render(true);
+            setTimeout(()=>{
+              i++;
+              if(i>=questions.length) return results(title, questions.length, correct, review);
+              render();
+            }, 700);
+          };
+        });
+      }
+    }
+
+    function results(title, total, correct, review){
+      el.innerHTML = `
+        <div class="card">
+          <h2>${title} — Result</h2>
+          <p><strong>${correct}</strong> / ${total} correct</p>
+          <button id="rev">Review explanations</button>
+          <button id="home">Back</button>
+        </div>`;
+      document.getElementById('home').onclick = home;
+      document.getElementById('rev').onclick = ()=>{
+        el.innerHTML = `
+          <div class="card"><h2>Review</h2>
+            ${review.map(r=>`
+              <div class="card">
+                <p>${r.stem}</p>
+                <p><em>${r.ok ? 'Correct' : 'Wrong'}</em> — Your choice: ${r.choice ?? '—'}</p>
+                <div class="muted">${r.explanation || '—'}</div>
+              </div>`).join('')}
+            <button id="home2">Back</button>
+          </div>`;
+        document.getElementById('home2').onclick = home;
+      };
+    }
+
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+    home();
+  </script>
+</body>
+</html>
