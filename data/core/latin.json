@@ -1,0 +1,17 @@
+{
+  "subtest": "CORE-LAT",
+  "questions": [
+    {
+      "id": "lat-001",
+      "stem": "Fill the 3\u00d73 Latin square: which symbol fits in the highlighted cell?",
+      "image_url": "",
+      "explanation": "Each symbol appears once per row and column; thus the only valid symbol is B.",
+      "choices": [
+        {"label":"A","text":"A","is_correct":false},
+        {"label":"B","text":"B","is_correct":true},
+        {"label":"C","text":"C","is_correct":false},
+        {"label":"D","text":"D","is_correct":false}
+      ]
+    }
+  ]
+}
