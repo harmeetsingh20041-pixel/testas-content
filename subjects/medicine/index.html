@@ -99,8 +99,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      overflow-y: auto;
-      max-height: calc(100vh - 220px);
       scrollbar-width: thin;
       scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
     }
@@ -288,11 +286,80 @@
       .panel {
         min-height: auto;
       }
+    }
 
-      .topic-content,
-      .question-list {
-        max-height: none;
-      }
+    .choice.correct .choice-button {
+      border-color: rgba(22, 163, 74, 0.6);
+      background: rgba(22, 163, 74, 0.12);
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.18);
+    }
+
+    .choice.incorrect .choice-button {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.14);
+    }
+
+    .choice.placeholder .choice-button {
+      cursor: not-allowed;
+      opacity: 0.6;
+      background: rgba(148, 163, 184, 0.12);
+      border-style: dashed;
+    }
+
+    .choice-button[disabled] {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .feedback strong {
+      color: rgba(22, 163, 74, 1);
+    }
+
+    .explanation-toggle {
+      align-self: flex-start;
+      border: none;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .explanation-toggle:hover {
+      background: rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .explanation-toggle:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
+    }
+
+    .explanation {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.03);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .explanation p {
+      margin: 0 0 12px;
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
     }
 
     .choice.correct .choice-button {
@@ -387,6 +454,7 @@
 
   <script>
     const DATA_URL = "../../data/subjects/medicine/set1.json";
+    const HTML_PATTERN = /<\/?[a-z][\s\S]*>/i;
 
     async function loadModule() {
       try {
@@ -457,34 +525,9 @@
 
       topicContent.innerHTML = '';
       if (Array.isArray(data.topic?.body) && data.topic.body.length) {
-        data.topic.body.forEach((block) => {
-          if (typeof block === 'string') {
-            const p = document.createElement('p');
-            p.innerHTML = block;
-            topicContent.appendChild(p);
-            return;
-          }
-
-          if (block.type === 'paragraph') {
-            const p = document.createElement('p');
-            p.innerHTML = block.text ?? '';
-            topicContent.appendChild(p);
-          } else if (block.type === 'image' && block.src) {
-            const figure = document.createElement('figure');
-            const img = document.createElement('img');
-            img.src = block.src;
-            img.alt = block.alt ?? '';
-            figure.appendChild(img);
-            if (block.caption) {
-              const caption = document.createElement('figcaption');
-              caption.innerHTML = block.caption;
-              figure.appendChild(caption);
-            }
-            topicContent.appendChild(figure);
-          }
-        });
+        data.topic.body.forEach((block) => appendContent(topicContent, block));
       } else if (data.topic?.bodyHtml) {
-        topicContent.innerHTML = data.topic.bodyHtml;
+        appendContent(topicContent, data.topic.bodyHtml);
       } else {
         const p = document.createElement('p');
         p.textContent = 'Topic details will appear here once the dataset is updated.';
@@ -543,33 +586,23 @@
           if (question.context) {
             const context = document.createElement('div');
             context.className = 'context';
-            context.innerHTML = question.context;
-            body.appendChild(context);
+            appendContent(context, question.context);
+            if (context.childNodes.length) {
+              body.appendChild(context);
+            }
           }
 
           if (question.stem) {
             const stem = document.createElement('div');
             stem.className = 'stem';
-            stem.innerHTML = question.stem;
-            body.appendChild(stem);
+            appendContent(stem, question.stem);
+            if (stem.childNodes.length) {
+              body.appendChild(stem);
+            }
           }
 
-          if (Array.isArray(question.media)) {
-            question.media.forEach((media) => {
-              if (media.type === 'image' && media.src) {
-                const figure = document.createElement('figure');
-                const img = document.createElement('img');
-                img.src = media.src;
-                img.alt = media.alt ?? '';
-                figure.appendChild(img);
-                if (media.caption) {
-                  const caption = document.createElement('figcaption');
-                  caption.innerHTML = media.caption;
-                  figure.appendChild(caption);
-                }
-                body.appendChild(figure);
-              }
-            });
+          if (question.media) {
+            appendContent(body, question.media);
           }
 
           const list = document.createElement('ul');
@@ -689,17 +722,6 @@
 
           toggle.addEventListener('click', () => {
             const expanded = item.getAttribute('aria-expanded') === 'true';
-
-            if (!expanded) {
-              document.querySelectorAll('.question-item[aria-expanded="true"]').forEach((openItem) => {
-                if (openItem !== item) {
-                  openItem.setAttribute('aria-expanded', 'false');
-                  const openToggle = openItem.querySelector('.question-toggle');
-                  openToggle?.setAttribute('aria-expanded', 'false');
-                }
-              });
-            }
-
             item.setAttribute('aria-expanded', String(!expanded));
             toggle.setAttribute('aria-expanded', String(!expanded));
             if (window.MathJax?.typesetPromise) {
