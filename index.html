@@ -1,152 +1,308 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TestAS Practice</title>
+  <title>Study Feeds • TestAS Practice</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem}
-    .card{border:1px solid #ddd;border-radius:12px;padding:1rem;margin:1rem 0}
-    .row{display:flex;gap:8px;flex-wrap:wrap}
-    .row button{padding:.6rem .9rem}
-    .choices button{display:block;width:100%;margin:.5rem 0;padding:.75rem}
-    img{max-width:100%;margin:.5rem 0}
-    .muted{color:#666}
+    :root{
+      --sf-red:#e30613;
+      --sf-dark:#0f1115;
+      --sf-mid:#2a2f36;
+      --sf-text:#1c1f24;
+      --sf-muted:#6b7280;
+      --sf-bg:#f7f7f8;
+      --card-bg:#ffffff;
+      --radius:16px;
+      --shadow:0 6px 22px rgba(16,24,40,.08);
+      --shadow-sm:0 3px 12px rgba(16,24,40,.06);
+      --ring:0 0 0 3px rgba(227,6,19,.14);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--sf-bg);color:var(--sf-text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif}
+    a{color:inherit}
+
+    .container{max-width:1000px;margin:0 auto;padding:24px}
+    header{
+      display:flex;align-items:center;gap:14px;margin:10px 0 6px 0;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:.2px
+    }
+    .brand .dot{width:10px;height:10px;background:var(--sf-red);border-radius:50%}
+    .tag{color:#fff;background:var(--sf-red);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:600}
+
+    .hero{
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,#ffffff, #fffaf9);
+      box-shadow:var(--shadow);
+      padding:28px;
+      margin:18px 0 26px 0;
+    }
+    .hero h1{
+      margin:0 0 10px 0; font-size:30px; line-height:1.2; letter-spacing:.2px;
+    }
+    .hero p{margin:0;color:var(--sf-muted);font-size:15px}
+    .hero .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{
+      appearance:none;border:1px solid rgba(16,24,40,.12);background:#fff;
+      padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;
+      transition:transform .08s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+    .btn-primary{
+      background:var(--sf-red);color:#fff;border-color:transparent;
+    }
+    .btn-primary:hover{box-shadow:0 8px 26px rgba(227,6,19,.22)}
+    .btn-ghost{background:transparent}
+
+    .section{margin:26px 0}
+    .section h2{margin:0 0 14px 0;font-size:20px}
+
+    .card{
+      background:var(--card-bg);
+      border:1px solid rgba(16,24,40,.08);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .grid{
+      display:grid;gap:12px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    @media (max-width:900px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+    @media (max-width:640px){ .grid{grid-template-columns:1fr;} }
+
+    .tile{
+      background:#fff;border:1px solid rgba(16,24,40,.08);
+      border-radius:14px;padding:14px 14px;
+      display:flex;align-items:center;justify-content:center;text-align:center;min-height:56px;
+      font-weight:600;cursor:pointer;transition:transform .08s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .tile:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:rgba(16,24,40,.16)}
+    .tile.core{background:linear-gradient(180deg,#ffffff,#fff);}
+    .tile.subject{background:#fff;}
+    .muted{color:var(--sf-muted);font-size:13px}
+
+    footer{
+      margin:28px 0 18px; color:var(--sf-muted); font-size:13px; text-align:center;
+    }
+    img.hero-logo{
+  height:36px;
+  vertical-align:middle;
+  object-fit:contain;
+  margin-right:8px;
+}
+
   </style>
 </head>
 <body>
-  <h1>TestAS Practice</h1>
-  <div id="app" class="card">Loading…</div>
+  <div class="container">
 
-  <script>
+    <header>
+  <img src="./studyfeeds-logo (1).png" alt="Study Feeds Logo" class="hero-logo">
+  <div class="brand">TestAS Practice Platform</div>
+  <span class="tag">Beta</span>
+</header>
+
+
+    <section class="hero card">
+      <h1>Authentic TestAS practice, built by Study Feeds.</h1>
+      <p>
+        Practice the official structure: <strong>Core Module</strong> (Figure Sequences, Mathematical Equations, Latin Squares)
+        and a <strong>Subject Module</strong> of your choice. Immediate feedback with explanations.
+      </p>
+      <div class="row">
+        <button class="btn btn-primary" id="btn-start-core">Start Core Module</button>
+        <a class="btn" href="https://www.studyfeeds.com/" target="_blank" rel="noopener">About Study Feeds</a>
+        <span class="muted">Made for students to prepare confidently for the digital TestAS.</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Core Module</h2>
+      <div id="core-grid" class="grid"></div>
+    </section>
+
+    <section class="section">
+      <h2>Subject Module</h2>
+      <div id="subject-grid" class="grid"></div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Study Feeds Practice • For demo/training use. This is not an official TestAS website.
+    </footer>
+  </div>
+
+  <script type="module">
+    // ====== CONFIGURE YOUR DATA LINKS HERE ======
     const URLS = {
-      modules: "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/modules.json",
+      modules: "RAW_URL_modules.json",
       core: {
-        "CORE-FIG": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/fig.json",
-        "CORE-MATH": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/math.json",
-        "CORE-LAT": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/core/latin.json"
+        "CORE-FIG": "RAW_URL_core/fig.json",
+        "CORE-MATH": "RAW_URL_core/math.json",   // kept for fallback
+        "CORE-LAT": "RAW_URL_core/latin.json"    // kept for fallback
       },
       subjects: {
-        "ECON": "https://raw.githubusercontent.com/harmeetsingh20041-pixel/testas-content/main/data/subjects/econ.json"
-        // Add more subject raw URLs here later
+        // add more subject links as you create them
+        "HUMSOC": "RAW_URL_subjects/humsoc.json",
+        "LIFE":   "RAW_URL_subjects/life.json",
+        "ENG":    "RAW_URL_subjects/eng.json",
+        "MINT":   "RAW_URL_subjects/mint.json",
+        "ECON":   "RAW_URL_subjects/econ.json",
+        "MED":    "RAW_URL_subjects/med.json"
       }
     };
 
-    const el = document.getElementById('app');
+    const elCore = document.getElementById('core-grid');
+    const elSubj = document.getElementById('subject-grid');
+    const btnStartCore = document.getElementById('btn-start-core');
+    document.getElementById('year').textContent = new Date().getFullYear();
+
     const fetchJSON = async (u)=>{ const r=await fetch(u); if(!r.ok) throw new Error('Fetch failed: '+u); return r.json(); };
+    const shuffle = (a)=>{ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
 
-    async function home(){
-      const modules = await fetchJSON(URLS.modules);
-      el.innerHTML = `
-        <div class="card">
-          <h2>Core Module</h2>
-          <div class="row">
-            ${modules.core.subtests
-              .sort((a,b)=>a.order-b.order)
-              .map(s=>`<button data-core="${s.code}">${s.order}. ${s.name}</button>`).join('')}
-          </div>
-        </div>
-        <div class="card">
-          <h2>Subject Module</h2>
-          <div class="row">
-            ${modules.subjects.map(s=>`<button data-subj="${s.code}">${s.name}</button>`).join('')}
-          </div>
-        </div>
-      `;
-      el.querySelectorAll('[data-core]').forEach(b=> b.onclick = ()=> startCore(b.dataset.core));
-      el.querySelectorAll('[data-subj]').forEach(b=> b.onclick = ()=> startSubject(b.dataset.subj));
-    }
+    // ====== PAGE RENDER ======
+    const modules = await fetchJSON(URLS.modules);
 
+    // Core grid
+    modules.core.subtests.sort((a,b)=>a.order-b.order).forEach(sub=>{
+      const tile = document.createElement('button');
+      tile.className = 'tile core';
+      tile.textContent = `${sub.order}. ${sub.name}`;
+      tile.onclick = ()=> startCore(sub.code);
+      elCore.appendChild(tile);
+    });
+
+    // Subject grid
+    modules.subjects.forEach(s=>{
+      const tile = document.createElement('button');
+      tile.className = 'tile subject';
+      tile.textContent = s.name;
+      tile.onclick = ()=> startSubject(s.code);
+      elSubj.appendChild(tile);
+    });
+
+    // Big CTA — start the first Core subtest (you can chain all later)
+    btnStartCore.onclick = ()=> startCore(modules.core.subtests[0].code);
+
+    // ====== ROUTING ======
     async function startCore(code){
-  // Open your full-page modules
-  if (code === 'CORE-MATH') { window.location.href = './core/math/';  return; }
-  if (code === 'CORE-LAT')  { window.location.href = './core/latin/'; return; }
+      // open your full-page modules
+      if (code === 'CORE-MATH') { window.location.href = './core/math/';  return; }
+      if (code === 'CORE-LAT')  { window.location.href = './core/latin/'; return; }
 
-      
-
-  // existing logic for other subtests
-  const url = URLS.core[code];
-  if(!url){ alert('Subtest not set up yet.'); return; }
-  const data = await fetchJSON(url);
-  runQuiz(data.subtest, data.questions, {mode:'core'});
-}
-
+      // default: JSON-driven subtest (Figure Sequences stays here)
+      const url = URLS.core[code];
+      if(!url){ alert('Subtest not set up yet.'); return; }
+      const data = await fetchJSON(url);
+      runQuiz(data.subtest, data.questions, {mode:'core'});
+    }
 
     async function startSubject(code){
       const url = URLS.subjects[code];
-      if(!url) return alert('Subject not set up yet.');
+      if(!url){ alert('Subject not set up yet.'); return; }
       const data = await fetchJSON(url);
       const qs = shuffle(data.questions);
-      runQuiz(data.subject || code, qs, {mode:'subject'});
+      runQuiz(data.subject, qs, {mode:'subject'});
     }
 
+    // ====== QUIZ ENGINE (unchanged functionality) ======
+    // We mount the quiz inline beneath the grids by replacing the container.
     function runQuiz(title, questions, opts){
+      const container = document.querySelector('.container');
+      container.innerHTML = `
+        <header>
+          <span class="dot"></span>
+          <div class="brand">Study Feeds • TestAS Practice</div>
+          <span class="tag">${opts.mode==='core' ? 'Core' : 'Subject'}</span>
+        </header>
+        <section class="hero card">
+          <h1>${title.replace('CORE-','')}</h1>
+          <p class="muted">Question <span id="p-count">1</span> / ${questions.length}</p>
+          <div class="row">
+            <button class="btn" id="btn-back">← Back to Modules</button>
+          </div>
+        </section>
+        <section class="section"><div class="card" id="quiz"></div></section>
+        <footer>© ${new Date().getFullYear()} Study Feeds Practice</footer>
+      `;
+      document.getElementById('btn-back').onclick = ()=> location.href = './';
+
       let i=0, correct=0, review=[];
+      const mount = document.getElementById('quiz');
       render();
 
       function render(showExp=false){
         const q = questions[i];
-        const progress = `${i+1} / ${questions.length}`;
-        el.innerHTML = `
-          <div class="muted">${opts.mode==='core' ? 'Core' : 'Subject'} • ${title} • ${progress}</div>
-          <div class="card">
-            <p>${q.stem}</p>
-            ${q.image_url ? `<img src="${q.image_url}" alt="">` : ``}
-            <div class="choices">
-              ${q.choices.map(c=>`
-                <button data-l="${c.label}">
-                  ${c.label ? `<strong>${c.label}.</strong> `:''}${c.text}
-                </button>`).join('')}
-            </div>
-            ${showExp ? `<div class="card" style="background:#f9f9f9">
+        document.getElementById('p-count').textContent = i+1;
+        mount.innerHTML = `
+          <p style="font-weight:600;margin:0 0 6px 0">${q.stem}</p>
+          ${q.image_url ? `<img src="${q.image_url}" alt="" style="max-width:100%;border:1px solid #eee;border-radius:12px;margin:8px 0">` : ``}
+          <div style="display:grid;gap:10px">
+            ${q.choices.map(c=>`
+              <button class="btn" data-l="${c.label}">
+                ${c.label ? `<strong>${c.label}.</strong> `:''}${c.text}
+              </button>
+            `).join('')}
+          </div>
+          ${showExp ? `
+            <div class="card" style="margin-top:14px;background:#fff7f7;border-color:#ffd7db">
               <strong>Explanation</strong><br>${q.explanation || '—'}
-            </div>`:''}
-          </div>`;
+            </div>` : ``}
+        `;
 
-        el.querySelectorAll('.choices button').forEach(btn=>{
+        mount.querySelectorAll('button[data-l]').forEach(btn=>{
           btn.onclick = ()=>{
-            const pick = q.choices.find(x=>x.label===btn.dataset.l);
-            const ok = !!pick?.is_correct;
+            const choice = q.choices.find(x=>x.label===btn.dataset.l);
+            const ok = !!choice?.is_correct;
             if(ok) correct++;
-            review.push({stem:q.stem, choice:pick?.label, ok, explanation:q.explanation});
+            review.push({stem:q.stem, choice:choice?.label, ok, explanation:q.explanation});
             render(true);
             setTimeout(()=>{
               i++;
-              if(i>=questions.length) return results(title, questions.length, correct, review);
+              if(i>=questions.length) return results();
               render();
-            }, 700);
+            }, 750);
           };
         });
       }
-    }
 
-    function results(title, total, correct, review){
-      el.innerHTML = `
-        <div class="card">
-          <h2>${title} — Result</h2>
-          <p><strong>${correct}</strong> / ${total} correct</p>
-          <button id="rev">Review explanations</button>
-          <button id="home">Back</button>
-        </div>`;
-      document.getElementById('home').onclick = home;
-      document.getElementById('rev').onclick = ()=>{
-        el.innerHTML = `
-          <div class="card"><h2>Review</h2>
+      function results(){
+        mount.innerHTML = `
+          <div style="text-align:center">
+            <h3 style="margin:0 0 6px 0">Result</h3>
+            <p><strong>${correct}</strong> / ${questions.length} correct</p>
+            <div class="row" style="justify-content:center;margin-top:12px">
+              <button class="btn btn-primary" id="btn-review">Review explanations</button>
+              <button class="btn" id="btn-home">Back to Modules</button>
+            </div>
+          </div>
+        `;
+        document.getElementById('btn-home').onclick = ()=> location.href = './';
+        document.getElementById('btn-review').onclick = ()=>{
+          mount.innerHTML = `
             ${review.map(r=>`
-              <div class="card">
-                <p>${r.stem}</p>
-                <p><em>${r.ok ? 'Correct' : 'Wrong'}</em> — Your choice: ${r.choice ?? '—'}</p>
-                <div class="muted">${r.explanation || '—'}</div>
-              </div>`).join('')}
-            <button id="home2">Back</button>
-          </div>`;
-        document.getElementById('home2').onclick = home;
-      };
+              <div class="card" style="margin-bottom:12px">
+                <p style="margin:0 0 6px 0">${r.stem}</p>
+                <p class="muted" style="margin:0 0 6px 0">
+                  ${r.ok ? '✅ Correct' : '❌ Wrong'} — Your choice: ${r.choice ?? '—'}
+                </p>
+                <div>${r.explanation || '—'}</div>
+              </div>
+            `).join('')}
+            <div class="row" style="margin-top:10px">
+              <button class="btn" onclick="location.href='./'">Back to Modules</button>
+            </div>
+          `;
+        };
+      }
     }
-
-    function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-
-    home();
   </script>
 </body>
 </html>
