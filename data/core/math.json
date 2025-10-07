@@ -1,0 +1,17 @@
+{
+  "subtest": "CORE-MATH",
+  "questions": [
+    {
+      "id": "math-001",
+      "stem": "Solve: (3x \u2212 4) = 8. What is x?",
+      "image_url": "",
+      "explanation": "3x = 12 \u21d2 x = 4.",
+      "choices": [
+        {"label":"A","text":"3","is_correct":false},
+        {"label":"B","text":"4","is_correct":true},
+        {"label":"C","text":"12","is_correct":false},
+        {"label":"D","text":"-4","is_correct":false}
+      ]
+    }
+  ]
+}
