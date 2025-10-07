@@ -1,54 +1,105 @@
 {
   "title": "Medicine Subject Module",
   "topic": {
-    "title": "Acute Cardiovascular and Respiratory Review",
+    "title": "Stress, Coping, and Burnout in Healthcare",
     "body": [
       {
         "type": "paragraph",
-        "text": "This module summarises key clinical observations that guide urgent decision making for cardiopulmonary emergencies. Pay attention to the patterns that link symptoms, laboratory values, and imaging." 
+        "text": "Working in health-care settings often means facing time pressure, high stakes, and emotionally charged encounters. When environmental demands feel severe enough to exceed an individual's resources, the result is psychological stress. Two main neuro-endocrine systems are activated: the sympatho-adreno-medullary (SAM) axis, releasing adrenaline and noradrenaline for an immediate \"fight-or-flight\" response, and the hypothalamic–pituitary–adrenal (HPA) axis, culminating in cortisol secretion that sustains energy supply but, when chronic, impairs immunity and mood."
       },
       {
         "type": "paragraph",
-        "text": "When you read the scenario, identify the organ system involved, recall the dominant physiology, and reason through the differential before selecting the response." 
+        "text": "According to Lazarus and Folkman's transactional model, an event causes stress only if it is appraised as threatening and coping resources are judged inadequate. Coping strategies can be broadly grouped into problem-focused approaches that change the stressor, emotion-focused approaches that regulate the emotional response, and maladaptive or avoidant strategies that provide short-term relief at the cost of long-term functioning."
+      },
+      {
+        "type": "list",
+        "ordered": false,
+        "items": [
+          "<strong>Problem-focused:</strong> setting action plans, managing time, and creating checklists to address the stressor directly.",
+          "<strong>Emotion-focused:</strong> mindfulness, breathing exercises, reframing, and other practices that regulate feelings.",
+          "<strong>Maladaptive:</strong> disengaging, venting without action, or ignoring deadlines, which may worsen outcomes over time."
+        ]
       }
     ]
   },
   "questions": [
     {
-      "id": "med-001",
-      "title": "Chest pain in the emergency department",
-      "context": "<p>A 58-year-old man presents with substernal chest pain and diaphoresis that started 45 minutes ago. His ECG shows ST-segment elevation in leads II, III, and aVF.</p>",
-      "stem": "<p>Which coronary artery is most likely occluded?</p>",
+      "id": "stress-001",
+      "title": "Hormonal mediator of prolonged stress",
+      "stem": "Which hormone is the primary long-acting mediator released via the HPA axis during a stress response?",
       "choices": [
-        { "label": "A", "text": "Left anterior descending artery" },
-        { "label": "B", "text": "Left circumflex artery" },
-        { "label": "C", "text": "Right coronary artery" },
-        { "label": "D", "text": "Diagonal branch" }
-      ]
+        "Cortisol",
+        "Insulin",
+        "Thyroxine",
+        "Dopamine"
+      ],
+      "answerIndex": 0,
+      "explanation": "Cortisol is released from the adrenal cortex via the HPA axis and sustains the physiological stress response during ongoing threats."
     },
     {
-      "id": "med-002",
-      "title": "Renal physiology checkpoint",
-      "context": "<p>A nephron segment reabsorbs about 65% of the filtered sodium and water and has leaky tight junctions. It is also the site of bulk reabsorption of glucose and amino acids.</p>",
-      "stem": "<p>Identify the nephron segment described.</p>",
+      "id": "stress-002",
+      "title": "Example of problem-focused coping",
+      "stem": "Which of the following behaviours best illustrates problem-focused coping?",
       "choices": [
-        { "label": "A", "text": "Proximal convoluted tubule" },
-        { "label": "B", "text": "Thin descending limb of the loop of Henle" },
-        { "label": "C", "text": "Thick ascending limb of the loop of Henle" },
-        { "label": "D", "text": "Distal convoluted tubule" }
-      ]
+        "Emotional disclosure after a difficult shift",
+        "Venting frustrations to a friend",
+        "Designing a detailed study timetable to cover upcoming exam topics",
+        "Ignoring approaching clinical deadlines"
+      ],
+      "answerIndex": 2,
+      "explanation": "Problem-focused coping targets the stressor itself; creating a detailed timetable is an action plan to manage workload demands."
     },
     {
-      "id": "med-003",
-      "title": "Acid–base interpretation",
-      "context": "<p>Arterial blood gas results show pH 7.28, PaCO<sub>2</sub> 55 mm Hg, and HCO<sub>3</sub><sup>-</sup> 25 mEq/L.</p>",
-      "stem": "<p>What is the primary acid–base disturbance?</p>",
+      "id": "stress-003",
+      "title": "Maslach burnout triad check",
+      "stem": "Which option is NOT part of the classic Maslach triad used to define professional burnout?",
       "choices": [
-        { "label": "A", "text": "Metabolic acidosis" },
-        { "label": "B", "text": "Respiratory acidosis" },
-        { "label": "C", "text": "Metabolic alkalosis" },
-        { "label": "D", "text": "Respiratory alkalosis" }
-      ]
+        "Emotional exhaustion",
+        "Depersonalization",
+        "Reduced personal accomplishment",
+        "Heightened empathy and compassion"
+      ],
+      "answerIndex": 3,
+      "explanation": "The Maslach triad includes emotional exhaustion, depersonalization, and reduced personal accomplishment; increased empathy is not one of the defining domains."
+    },
+    {
+      "id": "stress-004",
+      "title": "Drivers of depersonalization",
+      "stem": "In hospital residents, which workplace factor is most closely linked to the development of depersonalization?",
+      "choices": [
+        "High decision-making autonomy and schedule control",
+        "Heavy workload with limited time per patient",
+        "Regular peer support and protected time for breaks",
+        "Frequent constructive feedback from supervisors"
+      ],
+      "answerIndex": 1,
+      "explanation": "Heavy workload with limited patient contact time encourages emotional detachment and cynicism—hallmarks of depersonalization."
+    },
+    {
+      "id": "stress-005",
+      "title": "Classifying mindful breathing",
+      "stem": "Practising five minutes of mindful breathing between patient encounters is best categorised as:",
+      "choices": [
+        "A time-management intervention",
+        "Task delegation",
+        "Emotion-focused coping",
+        "Structural policy change"
+      ],
+      "answerIndex": 2,
+      "explanation": "Mindful breathing regulates the emotional response to stressors, making it an emotion-focused coping strategy."
+    },
+    {
+      "id": "stress-006",
+      "title": "True statement about acute stress",
+      "stem": "Which statement about acute stress is true?",
+      "choices": [
+        "Short bursts of stress can sharpen attention and memory in the moment.",
+        "Acute stress invariably suppresses immune function for weeks.",
+        "Acute stress is defined as any stress lasting longer than six months.",
+        "The SAM axis plays no role in acute stress responses."
+      ],
+      "answerIndex": 0,
+      "explanation": "Brief, moderate stress can enhance cognitive performance temporarily—a well-described eustress effect."
     }
   ]
 }

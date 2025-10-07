@@ -99,8 +99,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      overflow-y: auto;
-      max-height: calc(100vh - 220px);
       scrollbar-width: thin;
       scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
     }
@@ -236,14 +234,34 @@
     }
 
     .choice {
+      list-style: none;
+    }
+
+    .choice-button {
+      width: 100%;
       display: flex;
       gap: 14px;
       align-items: flex-start;
       padding: 12px 16px;
       border-radius: 12px;
       border: 1px solid var(--border);
-      transition: background var(--transition), border var(--transition);
+      transition: background var(--transition), border var(--transition),
+        color var(--transition), box-shadow var(--transition);
       background: rgba(248, 250, 252, 0.7);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+
+    .choice-button:hover {
+      border-color: var(--border-strong);
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    .choice-button:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
     }
 
     .choice-label {
@@ -268,11 +286,80 @@
       .panel {
         min-height: auto;
       }
+    }
 
-      .topic-content,
-      .question-list {
-        max-height: none;
-      }
+    .choice.correct .choice-button {
+      border-color: rgba(22, 163, 74, 0.6);
+      background: rgba(22, 163, 74, 0.12);
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.18);
+    }
+
+    .choice.incorrect .choice-button {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.14);
+    }
+
+    .choice.placeholder .choice-button {
+      cursor: not-allowed;
+      opacity: 0.6;
+      background: rgba(148, 163, 184, 0.12);
+      border-style: dashed;
+    }
+
+    .choice-button[disabled] {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .feedback strong {
+      color: rgba(22, 163, 74, 1);
+    }
+
+    .explanation-toggle {
+      align-self: flex-start;
+      border: none;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .explanation-toggle:hover {
+      background: rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .explanation-toggle:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
+    }
+
+    .explanation {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.03);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .explanation p {
+      margin: 0 0 12px;
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
     }
   </style>
 </head>
@@ -300,6 +387,7 @@
 
   <script>
     const DATA_URL = "../../data/subjects/medicine/set1.json";
+    const HTML_PATTERN = /<\/?[a-z][\s\S]*>/i;
 
     async function loadModule() {
       try {
@@ -313,8 +401,177 @@
         console.error(error);
         document.getElementById('topicContent').innerHTML =
           '<p>We\'re unable to load the module details right now. Please try again later.</p>';
-        document.getElementById('questionList').innerHTML = '';
+        const questionList = document.getElementById('questionList');
+        questionList.innerHTML = '';
+        const message = document.createElement('p');
+        message.textContent = 'Practice questions are unavailable while we reconnect to the server.';
+        message.style.color = 'var(--muted)';
+        questionList.appendChild(message);
       }
+    }
+
+    function normalizeAnswer(value) {
+      if (value == null) return null;
+      return String(value).trim().toLowerCase();
+    }
+
+    function appendHtml(target, html) {
+      if (!html) return;
+      const template = document.createElement('template');
+      template.innerHTML = html;
+      target.appendChild(template.content);
+    }
+
+    function appendContent(target, content) {
+      if (content == null) {
+        return;
+      }
+
+      if (Array.isArray(content)) {
+        content.forEach((entry) => appendContent(target, entry));
+        return;
+      }
+
+      if (typeof content === 'string') {
+        if (!content.trim()) return;
+        if (HTML_PATTERN.test(content)) {
+          appendHtml(target, content);
+        } else {
+          const paragraph = document.createElement('p');
+          paragraph.textContent = content;
+          target.appendChild(paragraph);
+        }
+        return;
+      }
+
+      if (typeof content !== 'object') {
+        return;
+      }
+
+      if (content.type === 'image' && content.src) {
+        const figure = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = content.src;
+        img.alt = content.alt ?? '';
+        figure.appendChild(img);
+        if (content.caption) {
+          const caption = document.createElement('figcaption');
+          appendContent(caption, content.caption);
+          figure.appendChild(caption);
+        }
+        target.appendChild(figure);
+        return;
+      }
+
+      if (content.type === 'list' && Array.isArray(content.items)) {
+        const list = document.createElement(content.ordered ? 'ol' : 'ul');
+        content.items.forEach((item) => {
+          const li = document.createElement('li');
+          appendContent(li, item);
+          list.appendChild(li);
+        });
+        target.appendChild(list);
+        return;
+      }
+
+      if (content.type === 'html' && content.html) {
+        appendHtml(target, content.html);
+        return;
+      }
+
+      const text = content.text ?? content.content ?? content.value ?? '';
+      appendContent(target, typeof text === 'string' ? text : String(text));
+    }
+
+    function ensureChoices(choices = []) {
+      const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      const source = Array.isArray(choices) ? choices.slice(0, 4) : [];
+      const normalized = source.map((choice, index) => {
+        const label = choice?.label ?? labels[index] ?? String.fromCharCode(65 + index);
+        let textContent = '';
+        let isHtml = false;
+
+        if (typeof choice === 'string') {
+          textContent = choice;
+        } else if (choice && typeof choice === 'object') {
+          if (choice.html) {
+            textContent = choice.html;
+            isHtml = true;
+          } else if (choice.text != null) {
+            textContent = String(choice.text);
+            isHtml = HTML_PATTERN.test(textContent);
+          } else if (choice.content != null) {
+            textContent = String(choice.content);
+            isHtml = HTML_PATTERN.test(textContent);
+          }
+        }
+
+        if (!textContent) {
+          textContent = 'Choice text pending update.';
+        }
+
+        const rawValue =
+          choice?.value ??
+          choice?.id ??
+          (typeof choice === 'string' ? null : choice?.label) ??
+          label;
+
+        return {
+          label,
+          text: textContent,
+          value: rawValue == null ? label : String(rawValue),
+          isHtml,
+          isPlaceholder: false,
+        };
+      });
+
+      while (normalized.length < 4) {
+        const index = normalized.length;
+        const label = labels[index] ?? String.fromCharCode(65 + index);
+        normalized.push({
+          label,
+          text: 'Choice data will be added soon.',
+          value: label,
+          isHtml: false,
+          isPlaceholder: true,
+        });
+      }
+
+      return normalized;
+    }
+
+    function determineCorrectAnswer(question, choices) {
+      if (!question) return null;
+
+      const indexCandidate =
+        Number.isInteger(question.answerIndex)
+          ? question.answerIndex
+          : Number.isInteger(question.correctIndex)
+          ? question.correctIndex
+          : null;
+
+      if (indexCandidate != null && choices[indexCandidate]) {
+        return normalizeAnswer(choices[indexCandidate].value);
+      }
+
+      const directCandidate =
+        question.correctChoice ?? question.correctValue ?? question.correctAnswer ?? question.answer ?? question.correct;
+
+      if (directCandidate != null) {
+        const normalized = normalizeAnswer(directCandidate);
+        if (normalized) {
+          const matched = choices.find(
+            (choice) =>
+              normalizeAnswer(choice.value) === normalized || normalizeAnswer(choice.label) === normalized,
+          );
+          if (matched) {
+            return normalizeAnswer(matched.value);
+          }
+          return normalized;
+        }
+      }
+
+      return null;
     }
 
     function renderModule(data) {
@@ -333,34 +590,9 @@
 
       topicContent.innerHTML = '';
       if (Array.isArray(data.topic?.body) && data.topic.body.length) {
-        data.topic.body.forEach((block) => {
-          if (typeof block === 'string') {
-            const p = document.createElement('p');
-            p.innerHTML = block;
-            topicContent.appendChild(p);
-            return;
-          }
-
-          if (block.type === 'paragraph') {
-            const p = document.createElement('p');
-            p.innerHTML = block.text ?? '';
-            topicContent.appendChild(p);
-          } else if (block.type === 'image' && block.src) {
-            const figure = document.createElement('figure');
-            const img = document.createElement('img');
-            img.src = block.src;
-            img.alt = block.alt ?? '';
-            figure.appendChild(img);
-            if (block.caption) {
-              const caption = document.createElement('figcaption');
-              caption.innerHTML = block.caption;
-              figure.appendChild(caption);
-            }
-            topicContent.appendChild(figure);
-          }
-        });
+        data.topic.body.forEach((block) => appendContent(topicContent, block));
       } else if (data.topic?.bodyHtml) {
-        topicContent.innerHTML = data.topic.bodyHtml;
+        appendContent(topicContent, data.topic.bodyHtml);
       } else {
         const p = document.createElement('p');
         p.textContent = 'Topic details will appear here once the dataset is updated.';
@@ -382,7 +614,8 @@
           const toggle = document.createElement('button');
           toggle.type = 'button';
           toggle.className = 'question-toggle';
-          toggle.setAttribute('aria-controls', `${question.id}-body`);
+          const questionId = question?.id ? String(question.id) : `question-${index + 1}`;
+          toggle.setAttribute('aria-controls', `${questionId}-body`);
           toggle.setAttribute('aria-expanded', 'false');
 
           const titleWrap = document.createElement('div');
@@ -401,80 +634,166 @@
           icon.setAttribute('height', '20');
           icon.setAttribute('viewBox', '0 0 20 20');
           icon.setAttribute('fill', 'none');
-          icon.innerHTML = '<path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+          const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          iconPath.setAttribute('d', 'M5 7.5l5 5 5-5');
+          iconPath.setAttribute('stroke', 'currentColor');
+          iconPath.setAttribute('stroke-width', '1.6');
+          iconPath.setAttribute('stroke-linecap', 'round');
+          iconPath.setAttribute('stroke-linejoin', 'round');
+          icon.appendChild(iconPath);
 
           toggle.append(titleWrap, icon);
 
           const body = document.createElement('div');
           body.className = 'question-body';
-          body.id = `${question.id}-body`;
+          body.id = `${questionId}-body`;
 
           if (question.context) {
             const context = document.createElement('div');
             context.className = 'context';
-            context.innerHTML = question.context;
-            body.appendChild(context);
+            appendContent(context, question.context);
+            if (context.childNodes.length) {
+              body.appendChild(context);
+            }
           }
 
           if (question.stem) {
             const stem = document.createElement('div');
             stem.className = 'stem';
-            stem.innerHTML = question.stem;
-            body.appendChild(stem);
+            appendContent(stem, question.stem);
+            if (stem.childNodes.length) {
+              body.appendChild(stem);
+            }
           }
 
-          if (Array.isArray(question.media)) {
-            question.media.forEach((media) => {
-              if (media.type === 'image' && media.src) {
-                const figure = document.createElement('figure');
-                const img = document.createElement('img');
-                img.src = media.src;
-                img.alt = media.alt ?? '';
-                figure.appendChild(img);
-                if (media.caption) {
-                  const caption = document.createElement('figcaption');
-                  caption.innerHTML = media.caption;
-                  figure.appendChild(caption);
+          if (question.media) {
+            appendContent(body, question.media);
+          }
+
+          const list = document.createElement('ul');
+          list.className = 'choices';
+          list.setAttribute('role', 'radiogroup');
+          list.setAttribute('aria-label', 'Answer choices');
+
+          const normalizedChoices = ensureChoices(question.choices);
+          const correctAnswer =
+            determineCorrectAnswer(question, normalizedChoices) ??
+            normalizeAnswer(normalizedChoices[0]?.value);
+          const feedback = document.createElement('div');
+          feedback.className = 'feedback';
+          feedback.setAttribute('role', 'status');
+          feedback.setAttribute('aria-live', 'polite');
+          const explanationButton = document.createElement('button');
+          explanationButton.type = 'button';
+          explanationButton.className = 'explanation-toggle';
+          explanationButton.textContent = 'Show explanation';
+          explanationButton.hidden = true;
+
+          const explanation = document.createElement('div');
+          explanation.className = 'explanation';
+          explanation.hidden = true;
+          appendContent(explanation, question.explanation);
+
+          const state = {
+            answeredCorrectly: false,
+            selectedButton: null,
+            selectedRow: null,
+          };
+
+          normalizedChoices.forEach((choice, choiceIndex) => {
+            const row = document.createElement('li');
+            row.className = 'choice';
+
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'choice-button';
+            button.setAttribute('role', 'radio');
+            button.setAttribute('aria-checked', 'false');
+            button.dataset.value = choice.value;
+
+            const choiceLabel = document.createElement('div');
+            choiceLabel.className = 'choice-label';
+            choiceLabel.textContent = choice.label ?? String.fromCharCode(65 + choiceIndex);
+
+            const choiceContent = document.createElement('div');
+            choiceContent.className = 'choice-content';
+            if (choice.isHtml) {
+              choiceContent.innerHTML = choice.text ?? '';
+            } else {
+              choiceContent.textContent = choice.text ?? '';
+            }
+
+            button.append(choiceLabel, choiceContent);
+            row.appendChild(button);
+            list.appendChild(row);
+
+            if (choice.isPlaceholder) {
+              row.classList.add('placeholder');
+              button.disabled = true;
+              button.setAttribute('aria-disabled', 'true');
+            }
+
+            button.addEventListener('click', () => {
+              if (state.answeredCorrectly) {
+                return;
+              }
+
+              if (state.selectedButton && state.selectedButton !== button) {
+                state.selectedButton.setAttribute('aria-checked', 'false');
+              }
+              if (state.selectedRow && state.selectedRow !== row) {
+                state.selectedRow.classList.remove('incorrect');
+              }
+
+              state.selectedButton = button;
+              state.selectedRow = row;
+              button.setAttribute('aria-checked', 'true');
+
+              const isCorrect =
+                normalizeAnswer(choice.value ?? choice.label) === correctAnswer;
+
+              if (isCorrect) {
+                row.classList.remove('incorrect');
+                row.classList.add('correct');
+                state.answeredCorrectly = true;
+                feedback.innerHTML = '<strong>Correct.</strong> Great job!';
+                list
+                  .querySelectorAll('.choice-button')
+                  .forEach((btn) => (btn.disabled = true));
+                if (explanation.childNodes.length) {
+                  explanationButton.hidden = false;
                 }
-                body.appendChild(figure);
+              } else {
+                row.classList.add('incorrect');
+                feedback.textContent =
+                  'Not quite. You can review the explanation or try another option.';
+                if (explanation.childNodes.length) {
+                  explanationButton.hidden = false;
+                }
               }
             });
-          }
+          });
 
-          if (Array.isArray(question.choices) && question.choices.length) {
-            const list = document.createElement('ul');
-            list.className = 'choices';
-            question.choices.forEach((choice) => {
-              const row = document.createElement('li');
-              row.className = 'choice';
+          body.appendChild(list);
+          body.appendChild(feedback);
 
-              const choiceLabel = document.createElement('div');
-              choiceLabel.className = 'choice-label';
-              choiceLabel.textContent = choice.label ?? '';
-
-              const choiceContent = document.createElement('div');
-              choiceContent.className = 'choice-content';
-              choiceContent.innerHTML = choice.text ?? choice.content ?? '';
-
-              row.append(choiceLabel, choiceContent);
-              list.appendChild(row);
+          if (explanation.childNodes.length) {
+            explanationButton.addEventListener('click', () => {
+              const willShow = explanation.hidden;
+              explanation.hidden = !willShow;
+              explanationButton.textContent = willShow
+                ? 'Hide explanation'
+                : 'Show explanation';
+              if (willShow && window.MathJax?.typesetPromise) {
+                window.MathJax.typesetPromise([explanation]);
+              }
             });
-            body.appendChild(list);
+            body.appendChild(explanationButton);
+            body.appendChild(explanation);
           }
 
           toggle.addEventListener('click', () => {
             const expanded = item.getAttribute('aria-expanded') === 'true';
-
-            if (!expanded) {
-              document.querySelectorAll('.question-item[aria-expanded="true"]').forEach((openItem) => {
-                if (openItem !== item) {
-                  openItem.setAttribute('aria-expanded', 'false');
-                  const openToggle = openItem.querySelector('.question-toggle');
-                  openToggle?.setAttribute('aria-expanded', 'false');
-                }
-              });
-            }
-
             item.setAttribute('aria-expanded', String(!expanded));
             toggle.setAttribute('aria-expanded', String(!expanded));
             if (window.MathJax?.typesetPromise) {
