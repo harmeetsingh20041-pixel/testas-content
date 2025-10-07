@@ -58,11 +58,19 @@
     }
 
     async function startCore(code){
-      const url = URLS.core[code];
-      if(!url) return alert('Subtest not set up yet.');
-      const data = await fetchJSON(url);
-      runQuiz(data.subtest, data.questions, {mode:'core'});
-    }
+  // if user picks Mathematical Equations → open your module page
+  if (code === 'CORE-MATH') {
+    window.location.href = './core/math/';
+    return;
+  }
+
+  // existing logic for other subtests
+  const url = URLS.core[code];
+  if(!url){ alert('Subtest not set up yet.'); return; }
+  const data = await fetchJSON(url);
+  runQuiz(data.subtest, data.questions, {mode:'core'});
+}
+
 
     async function startSubject(code){
       const url = URLS.subjects[code];
