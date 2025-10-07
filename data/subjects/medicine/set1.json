@@ -67,39 +67,39 @@
       "title": "Drivers of depersonalization",
       "stem": "In hospital residents, which workplace factor is most closely linked to the development of depersonalization?",
       "choices": [
-        "High decision-making autonomy and schedule control",
-        "Heavy workload with limited time per patient",
-        "Regular peer support and protected time for breaks",
-        "Frequent constructive feedback from supervisors"
+        { "label": "A", "text": "Left anterior descending artery" },
+        { "label": "B", "text": "Left circumflex artery" },
+        { "label": "C", "text": "Right coronary artery" },
+        { "label": "D", "text": "Diagonal branch" }
       ],
-      "answerIndex": 1,
-      "explanation": "Heavy workload with limited patient contact time encourages emotional detachment and cynicism—hallmarks of depersonalization."
+      "answer": "C",
+      "explanation": "<p>Inferior ST-segment elevations in leads II, III, and aVF most commonly reflect an occlusion of the right coronary artery, which supplies the inferior wall of the left ventricle.</p>"
     },
     {
       "id": "stress-005",
       "title": "Classifying mindful breathing",
       "stem": "Practising five minutes of mindful breathing between patient encounters is best categorised as:",
       "choices": [
-        "A time-management intervention",
-        "Task delegation",
-        "Emotion-focused coping",
-        "Structural policy change"
+        { "label": "A", "text": "Proximal convoluted tubule" },
+        { "label": "B", "text": "Thin descending limb of the loop of Henle" },
+        { "label": "C", "text": "Thick ascending limb of the loop of Henle" },
+        { "label": "D", "text": "Distal convoluted tubule" }
       ],
-      "answerIndex": 2,
-      "explanation": "Mindful breathing regulates the emotional response to stressors, making it an emotion-focused coping strategy."
+      "answer": "A",
+      "explanation": "<p>The proximal convoluted tubule reabsorbs the majority of filtered sodium, water, glucose, and amino acids through its leaky tight junctions, making it the best match for this description.</p>"
     },
     {
       "id": "stress-006",
       "title": "True statement about acute stress",
       "stem": "Which statement about acute stress is true?",
       "choices": [
-        "Short bursts of stress can sharpen attention and memory in the moment.",
-        "Acute stress invariably suppresses immune function for weeks.",
-        "Acute stress is defined as any stress lasting longer than six months.",
-        "The SAM axis plays no role in acute stress responses."
+        { "label": "A", "text": "Metabolic acidosis" },
+        { "label": "B", "text": "Respiratory acidosis" },
+        { "label": "C", "text": "Metabolic alkalosis" },
+        { "label": "D", "text": "Respiratory alkalosis" }
       ],
-      "answerIndex": 0,
-      "explanation": "Brief, moderate stress can enhance cognitive performance temporarily—a well-described eustress effect."
+      "answer": "B",
+      "explanation": "<p>The elevated PaCO<sub>2</sub> with an acidic pH and near-normal bicarbonate is most consistent with a primary respiratory acidosis due to hypoventilation.</p>"
     }
   ]
 }

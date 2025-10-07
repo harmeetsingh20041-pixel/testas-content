@@ -361,6 +361,73 @@
     .explanation p:last-child {
       margin-bottom: 0;
     }
+
+    .choice.correct .choice-button {
+      border-color: rgba(22, 163, 74, 0.6);
+      background: rgba(22, 163, 74, 0.12);
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.18);
+    }
+
+    .choice.incorrect .choice-button {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.14);
+    }
+
+    .choice-button[disabled] {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .feedback strong {
+      color: rgba(22, 163, 74, 1);
+    }
+
+    .explanation-toggle {
+      align-self: flex-start;
+      border: none;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .explanation-toggle:hover {
+      background: rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .explanation-toggle:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
+    }
+
+    .explanation {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.03);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .explanation p {
+      margin: 0 0 12px;
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body>
@@ -415,163 +482,31 @@
       return String(value).trim().toLowerCase();
     }
 
-    function appendHtml(target, html) {
-      if (!html) return;
-      const template = document.createElement('template');
-      template.innerHTML = html;
-      target.appendChild(template.content);
-    }
-
-    function appendContent(target, content) {
-      if (content == null) {
-        return;
-      }
-
-      if (Array.isArray(content)) {
-        content.forEach((entry) => appendContent(target, entry));
-        return;
-      }
-
-      if (typeof content === 'string') {
-        if (!content.trim()) return;
-        if (HTML_PATTERN.test(content)) {
-          appendHtml(target, content);
-        } else {
-          const paragraph = document.createElement('p');
-          paragraph.textContent = content;
-          target.appendChild(paragraph);
-        }
-        return;
-      }
-
-      if (typeof content !== 'object') {
-        return;
-      }
-
-      if (content.type === 'image' && content.src) {
-        const figure = document.createElement('figure');
-        const img = document.createElement('img');
-        img.src = content.src;
-        img.alt = content.alt ?? '';
-        figure.appendChild(img);
-        if (content.caption) {
-          const caption = document.createElement('figcaption');
-          appendContent(caption, content.caption);
-          figure.appendChild(caption);
-        }
-        target.appendChild(figure);
-        return;
-      }
-
-      if (content.type === 'list' && Array.isArray(content.items)) {
-        const list = document.createElement(content.ordered ? 'ol' : 'ul');
-        content.items.forEach((item) => {
-          const li = document.createElement('li');
-          appendContent(li, item);
-          list.appendChild(li);
-        });
-        target.appendChild(list);
-        return;
-      }
-
-      if (content.type === 'html' && content.html) {
-        appendHtml(target, content.html);
-        return;
-      }
-
-      const text = content.text ?? content.content ?? content.value ?? '';
-      appendContent(target, typeof text === 'string' ? text : String(text));
-    }
-
     function ensureChoices(choices = []) {
-      const labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-      const source = Array.isArray(choices) ? choices.slice(0, 4) : [];
-      const normalized = source.map((choice, index) => {
-        const label = choice?.label ?? labels[index] ?? String.fromCharCode(65 + index);
-        let textContent = '';
-        let isHtml = false;
-
-        if (typeof choice === 'string') {
-          textContent = choice;
-        } else if (choice && typeof choice === 'object') {
-          if (choice.html) {
-            textContent = choice.html;
-            isHtml = true;
-          } else if (choice.text != null) {
-            textContent = String(choice.text);
-            isHtml = HTML_PATTERN.test(textContent);
-          } else if (choice.content != null) {
-            textContent = String(choice.content);
-            isHtml = HTML_PATTERN.test(textContent);
-          }
-        }
-
-        if (!textContent) {
-          textContent = 'Choice text pending update.';
-        }
-
-        const rawValue =
-          choice?.value ??
-          choice?.id ??
-          (typeof choice === 'string' ? null : choice?.label) ??
-          label;
-
-        return {
-          label,
-          text: textContent,
-          value: rawValue == null ? label : String(rawValue),
-          isHtml,
-          isPlaceholder: false,
-        };
-      });
+      const labels = ['A', 'B', 'C', 'D'];
+      const normalized = Array.isArray(choices)
+        ? choices.slice(0, 4).map((choice, index) => ({
+            label: choice?.label ?? labels[index] ?? String.fromCharCode(65 + index),
+            text: choice?.text ?? choice?.content ?? '',
+            value:
+              choice?.value ??
+              choice?.id ??
+              choice?.label ??
+              (labels[index] ?? String.fromCharCode(65 + index)),
+          }))
+        : [];
 
       while (normalized.length < 4) {
         const index = normalized.length;
         const label = labels[index] ?? String.fromCharCode(65 + index);
         normalized.push({
           label,
-          text: 'Choice data will be added soon.',
+          text: 'Option will be added soon.',
           value: label,
-          isHtml: false,
-          isPlaceholder: true,
         });
       }
 
       return normalized;
-    }
-
-    function determineCorrectAnswer(question, choices) {
-      if (!question) return null;
-
-      const indexCandidate =
-        Number.isInteger(question.answerIndex)
-          ? question.answerIndex
-          : Number.isInteger(question.correctIndex)
-          ? question.correctIndex
-          : null;
-
-      if (indexCandidate != null && choices[indexCandidate]) {
-        return normalizeAnswer(choices[indexCandidate].value);
-      }
-
-      const directCandidate =
-        question.correctChoice ?? question.correctValue ?? question.correctAnswer ?? question.answer ?? question.correct;
-
-      if (directCandidate != null) {
-        const normalized = normalizeAnswer(directCandidate);
-        if (normalized) {
-          const matched = choices.find(
-            (choice) =>
-              normalizeAnswer(choice.value) === normalized || normalizeAnswer(choice.label) === normalized,
-          );
-          if (matched) {
-            return normalizeAnswer(matched.value);
-          }
-          return normalized;
-        }
-      }
-
-      return null;
     }
 
     function renderModule(data) {
@@ -677,8 +612,9 @@
 
           const normalizedChoices = ensureChoices(question.choices);
           const correctAnswer =
-            determineCorrectAnswer(question, normalizedChoices) ??
-            normalizeAnswer(normalizedChoices[0]?.value);
+            normalizeAnswer(
+              question.answer ?? question.correct ?? question.correctAnswer ?? null
+            ) ?? normalizeAnswer(normalizedChoices[0]?.value);
           const feedback = document.createElement('div');
           feedback.className = 'feedback';
           feedback.setAttribute('role', 'status');
@@ -692,7 +628,9 @@
           const explanation = document.createElement('div');
           explanation.className = 'explanation';
           explanation.hidden = true;
-          appendContent(explanation, question.explanation);
+          if (question.explanation) {
+            explanation.innerHTML = question.explanation;
+          }
 
           const state = {
             answeredCorrectly: false,
@@ -717,21 +655,11 @@
 
             const choiceContent = document.createElement('div');
             choiceContent.className = 'choice-content';
-            if (choice.isHtml) {
-              choiceContent.innerHTML = choice.text ?? '';
-            } else {
-              choiceContent.textContent = choice.text ?? '';
-            }
+            choiceContent.innerHTML = choice.text ?? '';
 
             button.append(choiceLabel, choiceContent);
             row.appendChild(button);
             list.appendChild(row);
-
-            if (choice.isPlaceholder) {
-              row.classList.add('placeholder');
-              button.disabled = true;
-              button.setAttribute('aria-disabled', 'true');
-            }
 
             button.addEventListener('click', () => {
               if (state.answeredCorrectly) {
@@ -760,14 +688,14 @@
                 list
                   .querySelectorAll('.choice-button')
                   .forEach((btn) => (btn.disabled = true));
-                if (explanation.childNodes.length) {
+                if (question.explanation) {
                   explanationButton.hidden = false;
                 }
               } else {
                 row.classList.add('incorrect');
                 feedback.textContent =
                   'Not quite. You can review the explanation or try another option.';
-                if (explanation.childNodes.length) {
+                if (question.explanation) {
                   explanationButton.hidden = false;
                 }
               }
@@ -777,7 +705,7 @@
           body.appendChild(list);
           body.appendChild(feedback);
 
-          if (explanation.childNodes.length) {
+          if (question.explanation) {
             explanationButton.addEventListener('click', () => {
               const willShow = explanation.hidden;
               explanation.hidden = !willShow;
