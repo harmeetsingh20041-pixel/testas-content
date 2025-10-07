@@ -1,0 +1,17 @@
+{
+  "core": {
+    "subtests": [
+      {"code": "CORE-FIG",  "name": "Figure Sequences",        "order": 1, "items_expected": 20},
+      {"code": "CORE-MATH", "name": "Mathematical Equations",   "order": 2, "items_expected": 20},
+      {"code": "CORE-LAT",  "name": "Latin Squares",            "order": 3, "items_expected": 20}
+    ]
+  },
+  "subjects": [
+    {"code":"HUMSOC","name":"Humanities, Cultural Studies and Social Sciences"},
+    {"code":"LIFE","name":"Life Sciences"},
+    {"code":"ENG","name":"Engineering"},
+    {"code":"MINT","name":"Mathematics, Computer Science, Natural Sciences"},
+    {"code":"ECON","name":"Economics"},
+    {"code":"MED","name":"Medicine"}
+  ]
+}
