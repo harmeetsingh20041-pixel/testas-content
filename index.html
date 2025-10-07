@@ -200,6 +200,10 @@
     }
 
     async function startSubject(code){
+      if (code === 'MED') {
+        window.location.href = './subjects/medicine/';
+        return;
+      }
       const url = URLS.subjects[code];
       if(!url){ alert('Subject not set up yet.'); return; }
       const data = await fetchJSON(url);
