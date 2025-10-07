@@ -236,14 +236,34 @@
     }
 
     .choice {
+      list-style: none;
+    }
+
+    .choice-button {
+      width: 100%;
       display: flex;
       gap: 14px;
       align-items: flex-start;
       padding: 12px 16px;
       border-radius: 12px;
       border: 1px solid var(--border);
-      transition: background var(--transition), border var(--transition);
+      transition: background var(--transition), border var(--transition),
+        color var(--transition), box-shadow var(--transition);
       background: rgba(248, 250, 252, 0.7);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+
+    .choice-button:hover {
+      border-color: var(--border-strong);
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    .choice-button:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
     }
 
     .choice-label {
@@ -273,6 +293,73 @@
       .question-list {
         max-height: none;
       }
+    }
+
+    .choice.correct .choice-button {
+      border-color: rgba(22, 163, 74, 0.6);
+      background: rgba(22, 163, 74, 0.12);
+      box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.18);
+    }
+
+    .choice.incorrect .choice-button {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.14);
+    }
+
+    .choice-button[disabled] {
+      cursor: default;
+      opacity: 0.9;
+    }
+
+    .feedback {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .feedback strong {
+      color: rgba(22, 163, 74, 1);
+    }
+
+    .explanation-toggle {
+      align-self: flex-start;
+      border: none;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      color: var(--text);
+      padding: 8px 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .explanation-toggle:hover {
+      background: rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .explanation-toggle:focus-visible {
+      outline: 3px solid rgba(249, 115, 22, 0.4);
+      outline-offset: 2px;
+    }
+
+    .explanation {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.03);
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .explanation p {
+      margin: 0 0 12px;
+    }
+
+    .explanation p:last-child {
+      margin-bottom: 0;
     }
   </style>
 </head>
@@ -313,8 +400,45 @@
         console.error(error);
         document.getElementById('topicContent').innerHTML =
           '<p>We\'re unable to load the module details right now. Please try again later.</p>';
-        document.getElementById('questionList').innerHTML = '';
+        const questionList = document.getElementById('questionList');
+        questionList.innerHTML = '';
+        const message = document.createElement('p');
+        message.textContent = 'Practice questions are unavailable while we reconnect to the server.';
+        message.style.color = 'var(--muted)';
+        questionList.appendChild(message);
       }
+    }
+
+    function normalizeAnswer(value) {
+      if (value == null) return null;
+      return String(value).trim().toLowerCase();
+    }
+
+    function ensureChoices(choices = []) {
+      const labels = ['A', 'B', 'C', 'D'];
+      const normalized = Array.isArray(choices)
+        ? choices.slice(0, 4).map((choice, index) => ({
+            label: choice?.label ?? labels[index] ?? String.fromCharCode(65 + index),
+            text: choice?.text ?? choice?.content ?? '',
+            value:
+              choice?.value ??
+              choice?.id ??
+              choice?.label ??
+              (labels[index] ?? String.fromCharCode(65 + index)),
+          }))
+        : [];
+
+      while (normalized.length < 4) {
+        const index = normalized.length;
+        const label = labels[index] ?? String.fromCharCode(65 + index);
+        normalized.push({
+          label,
+          text: 'Option will be added soon.',
+          value: label,
+        });
+      }
+
+      return normalized;
     }
 
     function renderModule(data) {
@@ -382,7 +506,8 @@
           const toggle = document.createElement('button');
           toggle.type = 'button';
           toggle.className = 'question-toggle';
-          toggle.setAttribute('aria-controls', `${question.id}-body`);
+          const questionId = question?.id ? String(question.id) : `question-${index + 1}`;
+          toggle.setAttribute('aria-controls', `${questionId}-body`);
           toggle.setAttribute('aria-expanded', 'false');
 
           const titleWrap = document.createElement('div');
@@ -401,13 +526,19 @@
           icon.setAttribute('height', '20');
           icon.setAttribute('viewBox', '0 0 20 20');
           icon.setAttribute('fill', 'none');
-          icon.innerHTML = '<path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />';
+          const iconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          iconPath.setAttribute('d', 'M5 7.5l5 5 5-5');
+          iconPath.setAttribute('stroke', 'currentColor');
+          iconPath.setAttribute('stroke-width', '1.6');
+          iconPath.setAttribute('stroke-linecap', 'round');
+          iconPath.setAttribute('stroke-linejoin', 'round');
+          icon.appendChild(iconPath);
 
           toggle.append(titleWrap, icon);
 
           const body = document.createElement('div');
           body.className = 'question-body';
-          body.id = `${question.id}-body`;
+          body.id = `${questionId}-body`;
 
           if (question.context) {
             const context = document.createElement('div');
@@ -441,25 +572,119 @@
             });
           }
 
-          if (Array.isArray(question.choices) && question.choices.length) {
-            const list = document.createElement('ul');
-            list.className = 'choices';
-            question.choices.forEach((choice) => {
-              const row = document.createElement('li');
-              row.className = 'choice';
+          const list = document.createElement('ul');
+          list.className = 'choices';
+          list.setAttribute('role', 'radiogroup');
+          list.setAttribute('aria-label', 'Answer choices');
 
-              const choiceLabel = document.createElement('div');
-              choiceLabel.className = 'choice-label';
-              choiceLabel.textContent = choice.label ?? '';
+          const normalizedChoices = ensureChoices(question.choices);
+          const correctAnswer =
+            normalizeAnswer(
+              question.answer ?? question.correct ?? question.correctAnswer ?? null
+            ) ?? normalizeAnswer(normalizedChoices[0]?.value);
+          const feedback = document.createElement('div');
+          feedback.className = 'feedback';
+          feedback.setAttribute('role', 'status');
+          feedback.setAttribute('aria-live', 'polite');
+          const explanationButton = document.createElement('button');
+          explanationButton.type = 'button';
+          explanationButton.className = 'explanation-toggle';
+          explanationButton.textContent = 'Show explanation';
+          explanationButton.hidden = true;
 
-              const choiceContent = document.createElement('div');
-              choiceContent.className = 'choice-content';
-              choiceContent.innerHTML = choice.text ?? choice.content ?? '';
+          const explanation = document.createElement('div');
+          explanation.className = 'explanation';
+          explanation.hidden = true;
+          if (question.explanation) {
+            explanation.innerHTML = question.explanation;
+          }
 
-              row.append(choiceLabel, choiceContent);
-              list.appendChild(row);
+          const state = {
+            answeredCorrectly: false,
+            selectedButton: null,
+            selectedRow: null,
+          };
+
+          normalizedChoices.forEach((choice, choiceIndex) => {
+            const row = document.createElement('li');
+            row.className = 'choice';
+
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'choice-button';
+            button.setAttribute('role', 'radio');
+            button.setAttribute('aria-checked', 'false');
+            button.dataset.value = choice.value;
+
+            const choiceLabel = document.createElement('div');
+            choiceLabel.className = 'choice-label';
+            choiceLabel.textContent = choice.label ?? String.fromCharCode(65 + choiceIndex);
+
+            const choiceContent = document.createElement('div');
+            choiceContent.className = 'choice-content';
+            choiceContent.innerHTML = choice.text ?? '';
+
+            button.append(choiceLabel, choiceContent);
+            row.appendChild(button);
+            list.appendChild(row);
+
+            button.addEventListener('click', () => {
+              if (state.answeredCorrectly) {
+                return;
+              }
+
+              if (state.selectedButton && state.selectedButton !== button) {
+                state.selectedButton.setAttribute('aria-checked', 'false');
+              }
+              if (state.selectedRow && state.selectedRow !== row) {
+                state.selectedRow.classList.remove('incorrect');
+              }
+
+              state.selectedButton = button;
+              state.selectedRow = row;
+              button.setAttribute('aria-checked', 'true');
+
+              const isCorrect =
+                normalizeAnswer(choice.value ?? choice.label) === correctAnswer;
+
+              if (isCorrect) {
+                row.classList.remove('incorrect');
+                row.classList.add('correct');
+                state.answeredCorrectly = true;
+                feedback.innerHTML = '<strong>Correct.</strong> Great job!';
+                list
+                  .querySelectorAll('.choice-button')
+                  .forEach((btn) => (btn.disabled = true));
+                if (question.explanation) {
+                  explanationButton.hidden = false;
+                }
+              } else {
+                row.classList.add('incorrect');
+                feedback.textContent =
+                  'Not quite. You can review the explanation or try another option.';
+                if (question.explanation) {
+                  explanationButton.hidden = false;
+                }
+              }
             });
-            body.appendChild(list);
+          });
+
+          body.appendChild(list);
+          body.appendChild(feedback);
+
+          if (question.explanation) {
+            explanationButton.addEventListener('click', () => {
+              const willShow = explanation.hidden;
+              explanation.hidden = !willShow;
+              explanationButton.textContent = willShow
+                ? 'Hide explanation'
+                : 'Show explanation';
+              if (willShow && window.MathJax?.typesetPromise) {
+                window.MathJax.typesetPromise([explanation]);
+              }
+            });
+            body.appendChild(explanationButton);
+            body.appendChild(explanation);
           }
 
           toggle.addEventListener('click', () => {
