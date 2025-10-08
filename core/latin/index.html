@@ -2,834 +2,786 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Latin Squares For TestAS by Study Feeds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Latin Squares Module • Study Feeds TestAS Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --sf-red: #e30613;
+      --sf-dark: #111827;
+      --sf-muted: #6b7280;
+      --sf-border: #e5e7eb;
+      --sf-surface: #ffffff;
+      --sf-bg: #f4f5f8;
+      --sf-highlight: #fef3f2;
+      --sf-radius: 18px;
+      --sf-shadow: 0 18px 40px rgba(15, 17, 21, 0.08);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(227, 6, 19, 0.04) 0%, rgba(227, 6, 19, 0) 55%),
+                  radial-gradient(circle at 120% 20%, rgba(49, 46, 129, 0.05) 0%, rgba(49, 46, 129, 0) 36%),
+                  var(--sf-bg);
+      color: var(--sf-dark);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-      background-color: #fffdf7;
-      color: #222;
-      transition: background-color 0.3s;
     }
 
-    .test-mode {
-      background-color: #f0f8ff;
+    .top-nav {
+      padding: 22px 0 10px;
     }
 
-    .main-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      max-width: 1000px;
-    }
-
-    .canvas-container {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    canvas {
-      border: 4px solid #d62d20;
-      border-radius: 8px;
-      background-color: white;
-    }
-
-    button, select {
-      margin: 5px;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 5px;
-      background-color: #d62d20;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s;
-    }
-
-    button:hover, select:hover {
-      background-color: #a91c14;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    header img {
-      max-width: 180px;
-      margin-bottom: 10px;
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 10px;
-      gap: 10px;
-    }
-
-    .options-panel {
-      display: flex;
-      flex-direction: column;
-      border: 2px solid #000;
-      padding: 10px;
-      border-radius: 8px;
-      min-width: 80px;
-      background: white;
-    }
-
-    .options-panel button {
-      margin: 5px 0;
-      background-color: #3498db;
-    }
-
-    .options-panel button.selected {
-      background-color: #2ecc71;
-    }
-
-    #scoreDisplay {
-      margin-top: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #27ae60;
-      display: none;
-    }
-
-    .summary-table {
+    .wrap {
       width: 100%;
-      max-width: 700px;
-      border-collapse: collapse;
-      margin: 20px auto;
-      font-family: Arial, sans-serif;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.08);
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      background: rgba(17, 24, 39, 0.12);
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 243, 243, 0.96));
+      border-radius: calc(var(--sf-radius) + 8px);
+      padding: 36px clamp(22px, 4vw, 54px);
+      box-shadow: var(--sf-shadow);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+      align-items: center;
+    }
+
+    .page-header img {
+      width: 120px;
+      height: auto;
+    }
+
+    .page-header h1 {
+      margin: 0 0 12px 0;
+      font-size: clamp(28px, 4vw, 36px);
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--sf-muted);
       font-size: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .summary-table th {
-      background-color: #d62d20;
-      color: white;
-      padding: 12px 15px;
-      text-align: left;
-    }
-    
-    .summary-table td {
-      padding: 10px 15px;
-      border-bottom: 1px solid #ddd;
-    }
-    
-    .summary-table tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    
-    .summary-table tr:hover {
-      background-color: #f1f1f1;
-    }
-    
-    .summary-table .correct {
-      color: #27ae60;
-      font-weight: bold;
-    }
-    
-    .summary-table .incorrect {
-      color: #e74c3c;
-      font-weight: bold;
-    }
-    
-    .non-test-element {
-      display: block;
-    }
-    
-    .test-mode .non-test-element {
-      display: none;
+      line-height: 1.6;
+      max-width: 620px;
     }
 
-    .solution-steps {
-      background-color: #f8f9fa;
-      border-left: 4px solid #3498db;
-      padding: 15px 20px;
-      margin: 20px 0;
-      border-radius: 0 8px 8px 0;
-      max-width: 700px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    .status-card {
+      background: var(--sf-surface);
+      border-radius: var(--sf-radius);
+      padding: 18px 22px;
+      box-shadow: var(--sf-shadow);
+      margin-bottom: 26px;
+      border: 1px solid rgba(17, 24, 39, 0.06);
     }
 
-    .solution-steps h3 {
-      margin-top: 0;
-      color: #2c3e50;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 10px;
+    .status-line {
+      margin: 0;
+      font-weight: 500;
+      font-size: 15px;
     }
 
-    .solution-step {
-      margin-bottom: 15px;
-      padding-bottom: 15px;
-      border-bottom: 1px dashed #ddd;
+    .question-list {
+      display: grid;
+      gap: 28px;
     }
 
-    .solution-step:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
+    .question-card {
+      background: var(--sf-surface);
+      border-radius: var(--sf-radius);
+      padding: clamp(22px, 3vw, 34px);
+      box-shadow: var(--sf-shadow);
+      border: 1px solid rgba(17, 24, 39, 0.06);
+      display: grid;
+      gap: 18px;
     }
 
-    .step-number {
-      display: inline-block;
-      width: 25px;
-      height: 25px;
-      background: #3498db;
-      color: white;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 25px;
-      margin-right: 10px;
-      font-weight: bold;
-    }
-
-    .greek-letters {
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 1.1em;
-    }
-
-    .symbol {
-      font-weight: bold;
-      color: #d62d20;
-    }
-
-    .explanation-container {
-      width: 100%;
-      max-width: 700px;
-      margin: 20px auto;
-    }
-
-    .symbol-key {
+    .question-card__header {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 15px 0;
-      padding: 10px;
-      background: #f8f9fa;
-      border-radius: 8px;
-    }
-
-    .symbol-item {
-      display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 12px;
     }
 
-    .color-box {
-      width: 20px;
-      height: 20px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
+    .question-card__header h2 {
+      margin: 0;
+      font-size: 20px;
+      flex: 1;
     }
-    
-    .test-header {
-      display: flex;
-      justify-content: space-between;
+
+    .question-card__controls {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      background: #fff;
+      color: var(--sf-dark);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .pill-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15, 17, 21, 0.12);
+      background: rgba(227, 6, 19, 0.05);
+    }
+
+    .pill-button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .question-prompt {
+      margin: 0;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .question-image {
       width: 100%;
-      max-width: 800px;
-      margin-bottom: 15px;
+      border-radius: 16px;
+      border: 1px solid var(--sf-border);
+      background: #fff;
+      object-fit: contain;
+      max-height: 420px;
     }
-    
-    .test-info {
+
+    .targets {
+      display: grid;
+      gap: 18px;
+    }
+
+    .target-block {
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fafbff;
+    }
+
+    .target-title {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .option-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .option-button {
+      position: relative;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.18s ease, border-color 0.15s ease, background 0.15s ease;
+      min-height: 150px;
     }
 
+    .option-button img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      background: #fff;
+    }
+
+    .option-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .option-caption {
+      font-size: 13px;
+      color: var(--sf-muted);
+      text-align: center;
+    }
+
+    .option-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(15, 17, 21, 0.1);
+      border-color: rgba(227, 6, 19, 0.35);
+    }
+
+    .option-button.selected {
+      border-color: var(--sf-red);
+      box-shadow: 0 18px 40px rgba(227, 6, 19, 0.18);
+      background: linear-gradient(135deg, rgba(227, 6, 19, 0.08), rgba(227, 6, 19, 0.02));
+    }
+
+    .option-button.correct {
+      border-color: #1d9d5c;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(255, 255, 255, 0.96));
+      box-shadow: 0 18px 40px rgba(16, 185, 129, 0.18);
+    }
+
+    .option-button.user-choice {
+      border-color: #dc2626;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.12), rgba(255, 255, 255, 0.96));
+      box-shadow: 0 18px 36px rgba(220, 38, 38, 0.16);
+    }
+
+    .hint-box,
+    .explanation-box {
+      border-radius: 16px;
+      padding: 18px 20px;
+      background: var(--sf-highlight);
+      border: 1px solid rgba(227, 6, 19, 0.18);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .hint-box h3,
+    .explanation-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .explanation-box {
+      background: #f0fdf4;
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+
+    .answer-summary {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .answer-line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .answer-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .answer-value {
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .answer-detail {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: var(--sf-muted);
+    }
+
+    .text-block p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--sf-muted);
+      font-weight: 500;
+    }
+
+    .error-box {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(220, 38, 38, 0.28);
+      background: rgba(254, 226, 226, 0.9);
+      color: #991b1b;
+      font-size: 14px;
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      border-radius: var(--sf-radius);
+      border: 1px dashed rgba(17, 24, 39, 0.12);
+      background: #fff;
+      color: var(--sf-muted);
+      font-weight: 500;
+    }
+
+    @media (max-width: 720px) {
+      .page-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .page-header img {
+        justify-self: center;
+      }
+
+      .status-card {
+        margin-bottom: 20px;
+      }
+
+      .question-card {
+        padding: 22px;
+      }
+
+      .question-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .option-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+    }
   </style>
 </head>
 <body>
-  <nav style="margin:20px;text-align:center;">
-  <a href="../../index.html" style="color:#e30613;text-decoration:none;font-weight:600;border:2px solid #e30613;padding:8px 12px;border-radius:8px;">
-    ← Back to Modules
-  </a>
-</nav>
+  <div class="page">
+    <nav class="top-nav">
+      <div class="wrap">
+        <a class="back-link" href="../../index.html">← Back to Modules</a>
+      </div>
+    </nav>
 
-<header class="non-test-element">
-  <img src="studyfeeds-logo (1).png" alt="Study Feeds Logo" style="max-width: 180px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
-  <h2>Latin Squares For TestAS by Study Feeds</h2>
-</header>
+    <main class="wrap">
+      <header class="page-header">
+        <img src="./studyfeeds-logo (1).png" alt="Study Feeds logo" />
+        <div>
+          <h1>Latin Squares Module</h1>
+          <p>
+            Practise TestAS Latin squares by working through up to twenty questions at a time. Questions are shuffled on every
+            visit; if fewer than twenty are available, all uploaded questions are shown. Select the correct matrices for each
+            highlighted position, reveal a hint if you get stuck, and check the full explanation when you are ready.
+          </p>
+        </div>
+      </header>
 
-<div class="controls non-test-element">
-  <div>
-    <label for="dimension">Dimension:</label>
-    <select id="dimension">
-      <option value="3">3x3</option>
-      <option value="4">4x4</option>
-      <option value="5" selected>5x5</option>
-    </select>
+      <section class="status-card">
+        <p id="statusLine" class="status-line">Loading question bank…</p>
+      </section>
+
+      <section id="questionList" class="question-list" aria-live="polite">
+        <div id="loadingState" class="loading-state">Preparing tasks…</div>
+      </section>
+
+      <div id="errorMessage" class="error-box" hidden></div>
+    </main>
   </div>
-  
-  <div>
-    <label for="symbols">Symbols:</label>
-    <select id="symbols">
-      <option value="letters">Letters</option>
-      <option value="numbers">Numbers</option>
-      <option value="figures">Figures</option>
-    </select>
-  </div>
-  
-  <div>
-    <label for="difficulty">Difficulty:</label>
-    <select id="difficulty">
-      <option value="easy">Easy</option>
-      <option value="medium" selected>Medium</option>
-      <option value="hard">Hard</option>
-    </select>
-  </div>
-  
-  <div style="flex-basis:100%; height:10px;"></div>
-  
-  <button id="newProblem">New Problem</button>
-  <button id="showSolution">Show Solution</button>
-  <button id="downloadImage">Download as Image</button>
-  <button id="startTestSeries">Start Test Series (20 questions / 25 min)</button>
-</div>
 
-<div class="test-header">
-  <h3 id="testTimer" style="display:none; color:#d62d20;"></h3>
-  <h4 id="testProgress" style="display:none;"></h4>
-</div>
-<div id="scoreDisplay"></div>
+  <script type="module">
+    const DATA_URL = '../../data/core/latin.json';
+    const MAX_QUESTIONS = 20;
 
-<div class="main-container">
-  <div class="canvas-container">
-    <canvas id="sudokuCanvas" width="450" height="450"></canvas>
-    <div class="options-panel" id="optionsPanel" style="display:none;"><strong>?</strong></div>
-  </div>
-  
-  <div class="explanation-container non-test-element">
-    <div id="stepExplanation" style="margin-top:10px; max-width: 600px; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5;"></div>
-    <div id="solutionSteps" class="solution-steps" style="display: none;"></div>
-  </div>
-</div>
+    const questionList = document.getElementById('questionList');
+    const statusLine = document.getElementById('statusLine');
+    const errorBox = document.getElementById('errorMessage');
+    const loadingState = document.getElementById('loadingState');
 
-<div id="testNavButtons" style="display:none; margin-top:10px;">
-  <button id="prevQuestion">Previous Question</button>
-  <button id="nextQuestion">Next Question</button>
-</div>
+    const normaliseId = (value) => (value === undefined || value === null ? null : String(value));
 
-<!-- Review Buttons -->
-<div id="reviewButtons" style="display:none; margin-top:10px;">
-  <button id="reviewPrev">Prev Review</button>
-  <button id="reviewNext">Next Review</button>
-</div>
-
-<!-- Summary Button -->
-<button id="showSummary" style="display:none; margin-top:10px;">Show Summary Table</button>
-
-<!-- Summary Table -->
-<div id="summaryTable" style="display:none; margin-top:20px; width:100%; max-width:700px;"></div>
-
-<!-- Reset Button -->
-<button id="resetButton" style="display:none; margin-top:10px;">Reset</button>
-
-<script>
-let dimension = 5;
-let symbolsType = 'letters';
-let difficulty = 'medium';
-let board = [];
-let solution = [];
-let questionMarkPosition = null;
-
-let isTestSeries = false;
-let testQuestionCount = 0;
-let testTimer;
-let testTimeRemaining;
-let testAnswers = [];
-let testBoards = [];
-let testSolutions = [];
-let testQuestionMarks = [];
-let testSelectedAnswers = [];
-
-let reviewMode = false;
-let reviewIndex = 0;
-
-const canvas = document.getElementById('sudokuCanvas');
-const ctx = canvas.getContext('2d');
-
-// Greek letters for column labels
-const greekLetters = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ'];
-
-// Map to get Greek letter for column index
-function getGreekLetter(index) {
-  return greekLetters[index] || `Col ${index+1}`;
-}
-
-function drawBoard(boardData, showSolutionMode = false) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const gridOffset = 50;
-  const size = (canvas.width - gridOffset) / dimension;
-  ctx.font = `${size * 0.6}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // Draw column headers (Greek letters) OUTSIDE grid
-ctx.font = `${size * 0.4}px sans-serif`;
-ctx.fillStyle = '#2c3e50';
-for (let j = 0; j < dimension; j++) {
-  ctx.fillText(getGreekLetter(j), gridOffset + (j + 0.5) * size, gridOffset / 2);
-}
-
-// Draw row headers (numbers) OUTSIDE grid
-for (let i = 0; i < dimension; i++) {
-  ctx.fillText((i + 1).toString(), gridOffset / 2, gridOffset + (i + 0.5) * size);
-}
-
-  // Draw grid and symbols
-  ctx.font = `${size * 0.5}px sans-serif`;
-  for (let i = 0; i < dimension; i++) {
-    for (let j = 0; j < dimension; j++) {
-      ctx.strokeStyle = '#aaa';
-      ctx.strokeRect(gridOffset + j * size, gridOffset + i * size, size, size);
-      const val = boardData[i][j];
-      if (questionMarkPosition && questionMarkPosition[0] === i && questionMarkPosition[1] === j) {
-        ctx.fillStyle = showSolutionMode ? '#ffe135' : '#d62d20';
-        ctx.fillRect(gridOffset + j * size + 2, gridOffset + i * size + 2, size - 4, size - 4);
-      }
-      if (val !== '') {
-  ctx.fillStyle = '#000';
-  ctx.fillText(val, gridOffset + j * size + size / 2, gridOffset + i * size + size / 2 + (symbolsType === 'figures' ? 5 : 0));
-}
-
-    }
-  }
-}
-
-function generateSymbols(type) {
-  switch (type) {
-    case 'letters': return 'ABCDEFGHIJ'.slice(0, dimension).split('');
-    case 'numbers': return Array.from({ length: dimension }, (_, i) => (i + 1).toString());
-    case 'figures': return ['★', '✿', '☀', '❖', '✚', '♠', '♥', '♦', '♣', '☘'].slice(0, dimension);
-    default: return Array.from({ length: dimension }, (_, i) => (i + 1).toString());
-  }
-}
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-
-function generateSudoku() {
-  const symbols = generateSymbols(symbolsType);
-  solution = Array.from({ length: dimension }, () => Array(dimension).fill(''));
-  function isValid(row, col, val) {
-    for (let i = 0; i < dimension; i++) {
-      if (solution[row][i] === val || solution[i][col] === val) return false;
-    }
-    return true;
-  }
-  function solve(cell = 0) {
-    if (cell >= dimension * dimension) return true;
-    const row = Math.floor(cell / dimension);
-    const col = cell % dimension;
-    shuffle(symbols);
-    for (const symbol of symbols) {
-      if (isValid(row, col, symbol)) {
-        solution[row][col] = symbol;
-        if (solve(cell + 1)) return true;
-        solution[row][col] = '';
-      }
-    }
-    return false;
-  }
-  solve();
-  const prob = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 0.5 : 0.3;
-  board = solution.map(row => row.map(val => (Math.random() < prob ? val : '')));
-  const i = Math.floor(Math.random() * dimension);
-  const j = Math.floor(Math.random() * dimension);
-  board[i][j] = '?';
-  questionMarkPosition = [i, j];
-  drawBoard(board);
-  updateOptionsPanel();
-  document.getElementById('solutionSteps').style.display = 'none';
-}
-
-function updateOptionsPanel() {
-  const panel = document.getElementById('optionsPanel');
-  if (!isTestSeries && !reviewMode) return panel.style.display = 'none';
-  panel.style.display = 'flex';
-  panel.innerHTML = '<strong>?</strong>';
-  const options = generateSymbols(symbolsType);
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.textContent = opt;
-
-    if (isTestSeries && testSelectedAnswers[testQuestionCount - 1] === opt) btn.classList.add('selected');
-    if (reviewMode) {
-      const correct = testSolutions[reviewIndex][testQuestionMarks[reviewIndex][0]][testQuestionMarks[reviewIndex][1]];
-      const selected = testSelectedAnswers[reviewIndex];
-      if (opt === correct) btn.style.border = '3px solid green';
-      if (opt === selected && opt !== correct) btn.style.border = '3px solid red';
-    }
-    btn.onclick = () => {
-      if (isTestSeries) testSelectedAnswers[testQuestionCount - 1] = opt;
-      updateOptionsPanel();
+    const getCorrectOptionId = (target) => {
+      if (!target) return null;
+      return normaliseId(
+        target.correct_option_id ??
+        target.correctOptionId ??
+        target.correct ??
+        target.answer ??
+        target.solution
+      );
     };
-    panel.appendChild(btn);
-  });
-}
 
-function updateTestTimer() {
-  const timer = document.getElementById('testTimer');
-  const mins = Math.floor(testTimeRemaining / 60);
-  const secs = testTimeRemaining % 60;
-  timer.textContent = `Time remaining: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  timer.style.color = testTimeRemaining <= 300 ? 'red' : '#d62d20';
-}
+    const resolveOptionId = (option, fallback) => {
+      if (!option) return fallback;
+      return normaliseId(option.id ?? option.value ?? option.code ?? option.label ?? fallback);
+    };
 
-function startTestSeries() {
-  isTestSeries = true;
-  document.body.classList.add('test-mode');
-  testQuestionCount = 0;
-  testTimeRemaining = 25 * 60;
-  testBoards = [];
-  testSolutions = [];
-  testQuestionMarks = [];
-  testSelectedAnswers = Array(20).fill(null);
-  
-  // Show test elements
-  document.getElementById('testTimer').style.display = 'block';
-  document.getElementById('testProgress').style.display = 'block';
-  document.getElementById('testNavButtons').style.display = 'block';
-  
-  // Hide solution button during test
-  document.getElementById('showSolution').style.display = 'none';
-  
-  updateTestTimer();
-  nextTestQuestion();
-  clearInterval(testTimer);
-  testTimer = setInterval(() => {
-    testTimeRemaining--;
-    updateTestTimer();
-    if (testTimeRemaining <= 0) endTestSeries();
-  }, 1000);
-}
+    const getOptionDisplay = (option) => {
+      if (!option) return '';
+      return option.display ?? option.caption ?? option.label ?? option.text ?? option.id ?? option.value ?? '';
+    };
 
-function nextTestQuestion() {
-  if (testQuestionCount >= 20) return endTestSeries();
-  testQuestionCount++;
-  document.getElementById('testProgress').textContent = `Question ${testQuestionCount} of 20`;
-  if (!testBoards[testQuestionCount - 1]) {
-    generateSudoku();
-    testBoards[testQuestionCount - 1] = JSON.parse(JSON.stringify(board));
-    testSolutions[testQuestionCount - 1] = JSON.parse(JSON.stringify(solution));
-    testQuestionMarks[testQuestionCount - 1] = [...questionMarkPosition];
-  } else {
-    board = JSON.parse(JSON.stringify(testBoards[testQuestionCount - 1]));
-    solution = JSON.parse(JSON.stringify(testSolutions[testQuestionCount - 1]));
-    questionMarkPosition = [...testQuestionMarks[testQuestionCount - 1]];
-    drawBoard(board);
-    updateOptionsPanel();
-  }
-}
-
-function prevTestQuestion() {
-  if (testQuestionCount <= 1) return;
-  testQuestionCount--;
-  document.getElementById('testProgress').textContent = `Question ${testQuestionCount} of 20`;
-  board = JSON.parse(JSON.stringify(testBoards[testQuestionCount - 1]));
-  solution = JSON.parse(JSON.stringify(testSolutions[testQuestionCount - 1]));
-  questionMarkPosition = [...testQuestionMarks[testQuestionCount - 1]];
-  drawBoard(board);
-  updateOptionsPanel();
-}
-
-function endTestSeries() {
-  clearInterval(testTimer);
-  isTestSeries = false;
-  document.body.classList.remove('test-mode');
-  document.getElementById('testTimer').style.display = 'none';
-  document.getElementById('testProgress').style.display = 'none';
-  document.getElementById('showSolution').style.display = 'inline-block';
-  document.getElementById('testNavButtons').style.display = 'none';
-  document.getElementById('optionsPanel').style.display = 'none';
-
-  let score = 0;
-  testSelectedAnswers.forEach((ans, i) => {
-    const correct = testSolutions[i][testQuestionMarks[i][0]][testQuestionMarks[i][1]];
-    if (ans === correct) score++;
-  });
-  document.getElementById('scoreDisplay').textContent = `You scored ${score}/20`;
-  document.getElementById('scoreDisplay').style.display = 'block';
-
-  reviewMode = true;
-  reviewIndex = 0;
-  showReviewQuestion();
-
-  document.getElementById('reviewButtons').style.display = 'block';
-  document.getElementById('showSummary').style.display = 'inline-block';
-  document.getElementById('resetButton').style.display = 'inline-block';
-}
-
-function showReviewQuestion() {
-  board = JSON.parse(JSON.stringify(testBoards[reviewIndex]));
-  solution = JSON.parse(JSON.stringify(testSolutions[reviewIndex]));
-  questionMarkPosition = [...testQuestionMarks[reviewIndex]];
-  drawBoard(solution, true);
-  updateOptionsPanel();
-  document.getElementById('scoreDisplay').textContent = `Reviewing Q${reviewIndex + 1}/20`;
-  generateStepExplanation();
-}
-
-document.getElementById('reviewPrev').onclick = () => {
-  if (reviewIndex > 0) {
-    reviewIndex--;
-    showReviewQuestion();
-  }
-};
-
-document.getElementById('reviewNext').onclick = () => {
-  if (reviewIndex < 19) {
-    reviewIndex++;
-    showReviewQuestion();
-  }
-};
-
-function generateStepExplanation() {
-  const row = testQuestionMarks[reviewIndex][0];
-  const col = testQuestionMarks[reviewIndex][1];
-  const allSymbols = generateSymbols(symbolsType);
-  
-  // Create symbol key for figures and colors
-  let symbolKeyHTML = '';
-  if (symbolsType === 'figures' || symbolsType === 'colors') {
-    symbolKeyHTML = '<div class="symbol-key"><strong>Symbol Key:</strong>';
-    allSymbols.forEach(sym => {
-      symbolKeyHTML += `<div class="symbol-item">`;
-      if (symbolsType === 'colors') {
-        symbolKeyHTML += `<div class="color-box" style="background-color:${sym}"></div> ${sym}`;
-      } else {
-        symbolKeyHTML += `${sym} = ${sym}`;
+    const createTextBlock = (content, headingText) => {
+      if (!content) return null;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'text-block';
+      if (headingText) {
+        const heading = document.createElement('h3');
+        heading.textContent = headingText;
+        wrapper.prepend(heading);
       }
-      symbolKeyHTML += `</div>`;
-    });
-    symbolKeyHTML += '</div>';
-  }
-  
-  // Step-by-step solution in official TestAS style
-  const solutionSteps = document.getElementById('solutionSteps');
-  solutionSteps.style.display = 'block';
-  
-  // Get the row and column labels
-  const rowLabel = row + 1;
-  const colLabel = getGreekLetter(col);
-  
-  // Get the correct symbol
-  const correctSymbol = solution[row][col];
-  
-  // Generate step-by-step explanation
-  let stepsHTML = `
-    <h3>Step-by-Step Solution for Position (Row ${rowLabel}, Column ${colLabel})</h3>
-    ${symbolKeyHTML}
-    <div class="solution-step">
-      <span class="step-number">1</span>
-      <span>In row ${rowLabel}, the symbols present are: 
-      ${getRowSymbols(row, true).join(', ')}. Therefore, the missing symbols in row ${rowLabel} are: 
-      <span class="symbol">${getMissingSymbols(row, true).join(', ')}</span>.</span>
-    </div>
-    
-    <div class="solution-step">
-      <span class="step-number">2</span>
-      <span>In column <span class="greek-letters">${colLabel}</span>, the symbols present are: 
-      ${getColumnSymbols(col, true).join(', ')}. Therefore, the missing symbols in column <span class="greek-letters">${colLabel}</span> are: 
-      <span class="symbol">${getMissingSymbols(col, false).join(', ')}</span>.</span>
-    </div>
-    
-    <div class="solution-step">
-      <span class="step-number">3</span>
-      <span>The symbol at position (${rowLabel}, <span class="greek-letters">${colLabel}</span>) must be a symbol that is missing in both the row and column.</span>
-    </div>
-    
-    <div class="solution-step">
-      <span class="step-number">4</span>
-      <span>After checking all constraints, the only symbol that satisfies both row and column requirements is 
-      <span class="symbol">${correctSymbol}</span>.</span>
-    </div>
-    
-    <div class="solution-step">
-      <span class="step-number">5</span>
-      <span>Therefore, the correct symbol for position (${rowLabel}, <span class="greek-letters">${colLabel}</span>) is 
-      <span class="symbol">${correctSymbol}</span>.</span>
-    </div>
-  `;
-  
-  solutionSteps.innerHTML = stepsHTML;
-}
+      const lines = Array.isArray(content)
+        ? content.flatMap((item) => (typeof item === 'string' ? item.split('\n') : []))
+        : String(content).split('\n');
+      lines
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+        .forEach((line) => {
+          const p = document.createElement('p');
+          p.textContent = line;
+          wrapper.appendChild(p);
+        });
+      return wrapper;
+    };
 
-// Helper functions for step-by-step solution
-function getRowSymbols(row, includeOtherCells) {
-  const symbols = [];
-  for (let j = 0; j < dimension; j++) {
-    if (!includeOtherCells && j === testQuestionMarks[reviewIndex][1]) continue;
-    const val = board[row][j];
-    if (val !== '' && val !== '?') {
-      symbols.push(val);
-    }
-  }
-  return symbols;
-}
+    const shuffle = (array) => {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
 
-function getColumnSymbols(col, includeOtherCells) {
-  const symbols = [];
-  for (let i = 0; i < dimension; i++) {
-    if (!includeOtherCells && i === testQuestionMarks[reviewIndex][0]) continue;
-    const val = board[i][col];
-    if (val !== '' && val !== '?') {
-      symbols.push(val);
-    }
-  }
-  return symbols;
-}
+    const applyAnswerHighlights = (questionState, show) => {
+      questionState.targets.forEach((targetState) => {
+        targetState.buttons.forEach(({ button, optionId }) => {
+          if (!show) {
+            button.classList.remove('correct', 'user-choice');
+            return;
+          }
+          const isCorrect = targetState.correctId && optionId === targetState.correctId;
+          const userChoice = questionState.selections[targetState.id];
+          const isUserChoice = userChoice && optionId === userChoice && optionId !== targetState.correctId;
+          button.classList.toggle('correct', Boolean(isCorrect));
+          button.classList.toggle('user-choice', Boolean(isUserChoice));
+        });
+      });
+    };
 
-function getMissingSymbols(rowOrCol, isRow) {
-  const allSymbols = generateSymbols(symbolsType);
-  const presentSymbols = isRow ? 
-    getRowSymbols(rowOrCol, false) : 
-    getColumnSymbols(rowOrCol, false);
-  
-  return allSymbols.filter(sym => !presentSymbols.includes(sym));
-}
+    const fillAnswerSummary = (container, questionState) => {
+      container.innerHTML = '';
+      questionState.targets.forEach((targetState) => {
+        const line = document.createElement('div');
+        line.className = 'answer-line';
 
-document.getElementById('showSummary').onclick = () => {
-  const summaryTable = document.getElementById('summaryTable');
-  summaryTable.style.display = 'block';
-  
-  let tableHTML = `
-    <table class="summary-table">
-      <thead>
-        <tr>
-          <th>Question</th>
-          <th>Your Answer</th>
-          <th>Correct Answer</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-  
-  for (let i = 0; i < 20; i++) {
-    const correct = testSolutions[i][testQuestionMarks[i][0]][testQuestionMarks[i][1]];
-    const userAns = testSelectedAnswers[i] ?? 'Not answered';
-    const isCorrect = userAns === correct;
-    
-    tableHTML += `
-      <tr>
-        <td>${i + 1}</td>
-        <td>${userAns}</td>
-        <td>${correct}</td>
-        <td class="${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</td>
-      </tr>
-    `;
-  }
-  
-  tableHTML += `
-      </tbody>
-    </table>
-  `;
-  
-  summaryTable.innerHTML = tableHTML;
-};
+        const label = document.createElement('span');
+        label.className = 'answer-label';
+        label.textContent = targetState.label;
 
-document.getElementById('resetButton').onclick = () => {
-  clearInterval(testTimer);
-  isTestSeries = false;
-  reviewMode = false;
-  reviewIndex = 0;
-  testQuestionCount = 0;
-  testBoards = [];
-  testSolutions = [];
-  testQuestionMarks = [];
-  testSelectedAnswers = [];
-  document.body.classList.remove('test-mode');
-  document.getElementById('testTimer').style.display = 'none';
-  document.getElementById('testProgress').style.display = 'none';
-  document.getElementById('showSolution').style.display = 'inline-block';
-  document.getElementById('testNavButtons').style.display = 'none';
-  document.getElementById('optionsPanel').style.display = 'none';
-  document.getElementById('scoreDisplay').style.display = 'none';
-  document.getElementById('reviewButtons').style.display = 'none';
-  document.getElementById('showSummary').style.display = 'none';
-  document.getElementById('summaryTable').style.display = 'none';
-  document.getElementById('resetButton').style.display = 'none';
-  document.getElementById('solutionSteps').style.display = 'none';
-  generateSudoku();
-};
+        const value = document.createElement('span');
+        value.className = 'answer-value';
+        const correctOption = targetState.optionLookup.get(targetState.correctId ?? '');
+        value.textContent = correctOption ? getOptionDisplay(correctOption) : '—';
 
-document.getElementById('newProblem').onclick = () => {
-  dimension = +document.getElementById('dimension').value;
-  symbolsType = document.getElementById('symbols').value;
-  difficulty = document.getElementById('difficulty').value;
-  generateSudoku();
-};
+        line.appendChild(label);
+        line.appendChild(value);
+        container.appendChild(line);
 
-document.getElementById('showSolution').onclick = () => {
-  drawBoard(solution, true);
-  generateStepExplanation();
-  document.getElementById('solutionSteps').style.display = 'block';
-};
+        const detailText = targetState.target.answer_explanation ?? targetState.target.answerExplanation;
+        if (detailText) {
+          const detail = document.createElement('p');
+          detail.className = 'answer-detail';
+          detail.textContent = detailText;
+          container.appendChild(detail);
+        }
+      });
+    };
 
-document.getElementById('downloadImage').onclick = () => {
-  const a = document.createElement('a');
-  a.download = 'latin_square.png';
-  a.href = canvas.toDataURL();
-  a.click();
-};
+    const renderQuestion = (question, index) => {
+      const questionId = normaliseId(question.id) ?? `question-${index + 1}`;
+      const card = document.createElement('article');
+      card.className = 'question-card';
+      card.dataset.questionId = questionId;
 
-document.getElementById('startTestSeries').onclick = startTestSeries;
-document.getElementById('nextQuestion').onclick = nextTestQuestion;
-document.getElementById('prevQuestion').onclick = prevTestQuestion;
+      const header = document.createElement('div');
+      header.className = 'question-card__header';
 
-generateSudoku();
-</script>
-<!-- FOOTER START -->
-<footer style="background-color: #f8f9fa; padding: 30px 20px; text-align: center; border-top: 2px solid #ddd; margin-top: 50px;">
-    <img src="studyfeeds-logo (1).png" alt="Study Feeds Logo" style="height: 50px; margin-bottom: 15px;">
-    
-    <div style="margin-bottom: 10px; font-size: 16px; color: #333;">
-        📧 info@studyfeeds.com
-    </div>
-    <div style="margin-bottom: 5px; font-size: 16px; color: #333;">
-        📞 9220502779 — Bachelors, TestAS and TestDaF Enquiry
-    </div>
-    <div style="margin-bottom: 15px; font-size: 16px; color: #333;">
-        📞 9212121739 — Masters Enquiry
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-        <a href="https://www.facebook.com/studyfeeds/" target="_blank" style="margin: 0 8px;">
-            <img src="facebook-icon.png" alt="Facebook" style="width: 35px;">
-        </a>
-        <a href="https://www.instagram.com/studyfeeds.official/#" target="_blank" style="margin: 0 8px;">
-            <img src="instagram-icon.gif" alt="Instagram" style="width: 35px;">
-        </a>
-        <a href="https://www.linkedin.com/company/study-feeds---india/" target="_blank" style="margin: 0 8px;">
-            <img src="linkedin-icon.png" alt="LinkedIn" style="width: 35px;">
-        </a>
-        <a href="https://www.youtube.com/channel/UCE63iwDEr6zHxSz9MOJCAyQ" target="_blank" style="margin: 0 8px;">
-            <img src="youtube-icon.png" alt="YouTube" style="width: 35px;">
-        </a>
-    </div>
-    
-    <div style="font-size: 14px; color: #666;">
-        Study Feeds Copyright © 2025
-    </div>
-</footer>
-<!-- FOOTER END -->
+      const title = document.createElement('h2');
+      title.textContent = `Question ${index + 1}`;
+      header.appendChild(title);
 
+      const controls = document.createElement('div');
+      controls.className = 'question-card__controls';
+
+      const questionState = {
+        id: questionId,
+        explanationVisible: false,
+        selections: {},
+        targets: []
+      };
+
+      const hintContent = question.hint ?? question.tip;
+      let hintBox = null;
+      if (hintContent) {
+        hintBox = document.createElement('div');
+        hintBox.className = 'hint-box';
+        hintBox.hidden = true;
+        const heading = document.createElement('h3');
+        heading.textContent = 'Hint';
+        hintBox.appendChild(heading);
+        const hintTextBlock = createTextBlock(hintContent);
+        if (hintTextBlock) {
+          hintBox.appendChild(hintTextBlock);
+        }
+      }
+
+      if (hintBox) {
+        const hintButton = document.createElement('button');
+        hintButton.type = 'button';
+        hintButton.className = 'pill-button';
+        hintButton.textContent = 'Show hint';
+        hintButton.setAttribute('aria-expanded', 'false');
+        hintButton.addEventListener('click', () => {
+          const show = hintBox.hidden;
+          hintBox.hidden = !show;
+          hintButton.textContent = show ? 'Hide hint' : 'Show hint';
+          hintButton.setAttribute('aria-expanded', show ? 'true' : 'false');
+        });
+        controls.appendChild(hintButton);
+      }
+
+      const explanationBox = document.createElement('div');
+      explanationBox.className = 'explanation-box';
+      explanationBox.hidden = true;
+
+      const explanationHeading = document.createElement('h3');
+      explanationHeading.textContent = 'Explanation';
+      explanationBox.appendChild(explanationHeading);
+
+      const answerSummary = document.createElement('div');
+      answerSummary.className = 'answer-summary';
+      explanationBox.appendChild(answerSummary);
+
+      const explanationTextBlock = createTextBlock(question.explanation ?? question.analysis ?? question.solution);
+      if (explanationTextBlock) {
+        explanationBox.appendChild(explanationTextBlock);
+      }
+
+      const explanationButton = document.createElement('button');
+      explanationButton.type = 'button';
+      explanationButton.className = 'pill-button';
+      explanationButton.textContent = 'Show explanation';
+      explanationButton.setAttribute('aria-expanded', 'false');
+      explanationButton.addEventListener('click', () => {
+        const show = explanationBox.hidden;
+        explanationBox.hidden = !show;
+        questionState.explanationVisible = show;
+        explanationButton.textContent = show ? 'Hide explanation' : 'Show explanation';
+        explanationButton.setAttribute('aria-expanded', show ? 'true' : 'false');
+        if (show) {
+          fillAnswerSummary(answerSummary, questionState);
+        }
+        applyAnswerHighlights(questionState, show);
+      });
+
+      controls.appendChild(explanationButton);
+      header.appendChild(controls);
+      card.appendChild(header);
+
+      const prompt = document.createElement('p');
+      prompt.className = 'question-prompt';
+      prompt.textContent = question.prompt ?? question.stem ?? 'Select the correct option for each image.';
+      card.appendChild(prompt);
+
+      const questionImagePath = question.question_image ?? question.figure ?? question.image_url ?? question.imageUrl ?? '';
+      if (questionImagePath) {
+        const image = document.createElement('img');
+        image.className = 'question-image';
+        image.src = questionImagePath;
+        image.alt = question.question_image_alt ?? question.figure_alt ?? question.prompt ?? 'Latin squares question';
+        card.appendChild(image);
+      }
+
+      const targetsData = Array.isArray(question.targets) ? question.targets : [];
+      if (!targetsData.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'This question does not have any answer targets yet.';
+        card.appendChild(empty);
+      } else {
+        const targetsWrapper = document.createElement('div');
+        targetsWrapper.className = 'targets';
+
+        targetsData.forEach((target, targetIndex) => {
+          const targetId = normaliseId(target.id) ?? `${questionId}-target-${targetIndex + 1}`;
+          const targetState = {
+            id: targetId,
+            label: target.label ?? `Blank ${targetIndex + 1}`,
+            correctId: getCorrectOptionId(target),
+            buttons: [],
+            optionLookup: new Map(),
+            target
+          };
+
+          const block = document.createElement('section');
+          block.className = 'target-block';
+
+          const title = document.createElement('h3');
+          title.className = 'target-title';
+          title.textContent = targetState.label;
+          block.appendChild(title);
+
+          const options = Array.isArray(target.options) ? target.options : [];
+          if (!options.length) {
+            const warning = document.createElement('p');
+            warning.className = 'answer-detail';
+            warning.textContent = 'No options have been uploaded for this target yet.';
+            block.appendChild(warning);
+          } else {
+            const optionGrid = document.createElement('div');
+            optionGrid.className = 'option-grid';
+
+            options.forEach((option, optionIndex) => {
+              const optionId = resolveOptionId(option, `${targetId}-option-${optionIndex + 1}`);
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'option-button';
+              button.dataset.optionId = optionId;
+              button.setAttribute('aria-pressed', 'false');
+
+              const label = document.createElement('span');
+              label.className = 'option-label';
+              label.textContent = getOptionDisplay(option);
+              button.appendChild(label);
+
+              const optionImagePath = option.image_url ?? option.imageUrl ?? option.image;
+              if (optionImagePath) {
+                const optionImg = document.createElement('img');
+                optionImg.src = optionImagePath;
+                optionImg.alt = option.alt ?? option.label ?? optionId;
+                button.appendChild(optionImg);
+              } else if (option.text) {
+                const caption = document.createElement('span');
+                caption.className = 'option-caption';
+                caption.textContent = option.text;
+                button.appendChild(caption);
+              } else if (option.caption) {
+                const caption = document.createElement('span');
+                caption.className = 'option-caption';
+                caption.textContent = option.caption;
+                button.appendChild(caption);
+              }
+
+              button.addEventListener('click', () => {
+                targetState.buttons.forEach(({ button: peer }) => {
+                  const isSelected = peer === button;
+                  peer.classList.toggle('selected', isSelected);
+                  peer.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+                });
+                questionState.selections[targetState.id] = optionId;
+                if (questionState.explanationVisible) {
+                  applyAnswerHighlights(questionState, true);
+                }
+              });
+
+              optionGrid.appendChild(button);
+              targetState.buttons.push({ button, optionId });
+              targetState.optionLookup.set(optionId, option);
+            });
+
+            block.appendChild(optionGrid);
+          }
+
+          targetsWrapper.appendChild(block);
+          questionState.targets.push(targetState);
+        });
+
+        card.appendChild(targetsWrapper);
+      }
+
+      if (hintBox) {
+        card.appendChild(hintBox);
+      }
+
+      card.appendChild(explanationBox);
+      questionList.appendChild(card);
+    };
+
+    const loadQuestions = async () => {
+      try {
+        const response = await fetch(DATA_URL, { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`Unable to fetch question bank (HTTP ${response.status})`);
+        }
+        const data = await response.json();
+        const allQuestions = Array.isArray(data.questions) ? data.questions : [];
+
+        if (loadingState) {
+          loadingState.remove();
+        }
+
+        if (!allQuestions.length) {
+          statusLine.textContent = 'No Latin squares questions have been uploaded yet.';
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.textContent = 'Add question entries to data/core/latin.json to start practising.';
+          questionList.appendChild(empty);
+          return;
+        }
+
+        const selected = shuffle(allQuestions).slice(0, Math.min(MAX_QUESTIONS, allQuestions.length));
+        const countText = `${selected.length} of ${allQuestions.length} uploaded question${allQuestions.length === 1 ? '' : 's'}`;
+        statusLine.textContent = `Displaying ${countText}. Refresh the page to load a new random set.`;
+
+        selected.forEach((question, index) => renderQuestion(question, index));
+      } catch (error) {
+        console.error(error);
+        statusLine.textContent = 'Unable to load questions right now.';
+        errorBox.hidden = false;
+        errorBox.textContent = error.message ?? 'Something went wrong while fetching the questions.';
+        if (loadingState) {
+          loadingState.textContent = 'Unable to load questions.';
+        }
+      }
+    };
+
+    loadQuestions();
+  </script>
 </body>
 </html>
