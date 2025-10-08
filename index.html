@@ -392,6 +392,7 @@
     btnStartCore.onclick = ()=> startCore(modules.core.subtests[0].code);
 
     async function startCore(code){
+      if (code === 'CORE-FIG')  { window.location.href = './core/figural/'; return; }
       if (code === 'CORE-MATH') { window.location.href = './core/math/';  return; }
       if (code === 'CORE-LAT')  { window.location.href = './core/latin/'; return; }
 
