@@ -2,16 +2,120 @@
   "subtest": "CORE-LAT",
   "questions": [
     {
-      "id": "lat-001",
-      "stem": "Fill the 3\u00d73 Latin square: which symbol fits in the highlighted cell?",
-      "image_url": "",
-      "explanation": "Each symbol appears once per row and column; thus the only valid symbol is B.",
-      "choices": [
-        {"label":"A","text":"A","is_correct":false},
-        {"label":"B","text":"B","is_correct":true},
-        {"label":"C","text":"C","is_correct":false},
-        {"label":"D","text":"D","is_correct":false}
-      ]
+      "id": "lat-demo-01",
+      "prompt": "Continue the sequence of figures correctly. Which option should fill each marked matrix?",
+      "question_image": "./samples/lat-demo-01-question.svg",
+      "hint": "L-shape: The symbol always moves one field clockwise within the four middle fields. The answer for Image 1 is Matrix 2. The answer for Image 2 is Matrix 3.",
+      "targets": [
+        {
+          "id": "image-1",
+          "label": "Image 1",
+          "correct_option_id": "matrix-2",
+          "answer_explanation": "The answer for Image 1 is Matrix 2 because the L-shape continues its clockwise walk.",
+          "options": [
+            {
+              "id": "matrix-1",
+              "label": "Matrix 1",
+              "image_url": "./samples/lat-demo-01-A1.svg",
+              "alt": "Matrix option 1"
+            },
+            {
+              "id": "matrix-2",
+              "label": "Matrix 2",
+              "image_url": "./samples/lat-demo-01-A2.svg",
+              "alt": "Matrix option 2"
+            },
+            {
+              "id": "matrix-3",
+              "label": "Matrix 3",
+              "image_url": "./samples/lat-demo-01-A3.svg",
+              "alt": "Matrix option 3"
+            }
+          ]
+        },
+        {
+          "id": "image-2",
+          "label": "Image 2",
+          "correct_option_id": "matrix-3",
+          "answer_explanation": "The answer for Image 2 is Matrix 3. The L-shape moves horizontally after the clockwise rotation.",
+          "options": [
+            {
+              "id": "matrix-1",
+              "label": "Matrix 1",
+              "image_url": "./samples/lat-demo-01-B1.svg",
+              "alt": "Matrix option 1"
+            },
+            {
+              "id": "matrix-2",
+              "label": "Matrix 2",
+              "image_url": "./samples/lat-demo-01-B2.svg",
+              "alt": "Matrix option 2"
+            },
+            {
+              "id": "matrix-3",
+              "label": "Matrix 3",
+              "image_url": "./samples/lat-demo-01-B3.svg",
+              "alt": "Matrix option 3"
+            }
+          ]
+        }
+      ],
+      "explanation": "Figure: L-shape\nColor: Does the color change? No\nOrientation: Does the orientation of the figure change? No\nMovement: Does the figure move horizontally, vertically, or diagonally? Yes, horizontally and vertically\nPosition along the border: Does the figure bounce off the border or move along the border? No\nx+1 Rule: Is the color, orientation, and/or motion rule around x+1? No"
+    },
+    {
+      "id": "lat-demo-02",
+      "prompt": "Identify the correct matrices for the highlighted cells.",
+      "question_image": "./samples/lat-demo-02-question.svg",
+      "hint": "Look at how the triangle shifts column by column.",
+      "targets": [
+        {
+          "id": "image-1",
+          "label": "Image 1",
+          "correct_option_id": "opt-b",
+          "answer_explanation": "Matrix B places the triangle in the only remaining row and column.",
+          "options": [
+            {
+              "id": "opt-a",
+              "label": "Matrix A",
+              "image_url": "./samples/lat-demo-02-A1.svg"
+            },
+            {
+              "id": "opt-b",
+              "label": "Matrix B",
+              "image_url": "./samples/lat-demo-02-A2.svg"
+            },
+            {
+              "id": "opt-c",
+              "label": "Matrix C",
+              "image_url": "./samples/lat-demo-02-A3.svg"
+            }
+          ]
+        },
+        {
+          "id": "image-2",
+          "label": "Image 2",
+          "correct_option_id": "opt-a",
+          "answer_explanation": "Matrix A keeps each symbol unique per row and column for the second blank.",
+          "options": [
+            {
+              "id": "opt-a",
+              "label": "Matrix A",
+              "image_url": "./samples/lat-demo-02-B1.svg"
+            },
+            {
+              "id": "opt-b",
+              "label": "Matrix B",
+              "image_url": "./samples/lat-demo-02-B2.svg"
+            },
+            {
+              "id": "opt-c",
+              "label": "Matrix C",
+              "image_url": "./samples/lat-demo-02-B3.svg"
+            }
+          ]
+        }
+      ],
+      "explanation": "Each symbol must appear exactly once per row and column. The triangle alternates between the middle and outer columns from top to bottom."
     }
   ]
 }
