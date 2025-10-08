@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Figural Sequences Module • Study Feeds TestAS Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sf-red: #e30613;
+      --sf-dark: #111827;
+      --sf-muted: #6b7280;
+      --sf-border: #e5e7eb;
+      --sf-surface: #ffffff;
+      --sf-bg: #f4f5f8;
+      --sf-highlight: #fef3f2;
+      --sf-radius: 18px;
+      --sf-shadow: 0 18px 40px rgba(15, 17, 21, 0.08);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, rgba(227, 6, 19, 0.04) 0%, rgba(227, 6, 19, 0) 55%),
+                  radial-gradient(circle at 120% 20%, rgba(49, 46, 129, 0.05) 0%, rgba(49, 46, 129, 0) 36%),
+                  var(--sf-bg);
+      color: var(--sf-dark);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-nav {
+      padding: 22px 0 10px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, 0.08);
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-1px);
+      background: rgba(17, 24, 39, 0.12);
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 243, 243, 0.96));
+      border-radius: calc(var(--sf-radius) + 8px);
+      padding: 36px clamp(22px, 4vw, 54px);
+      box-shadow: var(--sf-shadow);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+      align-items: center;
+    }
+
+    .page-header img {
+      width: 120px;
+      height: auto;
+    }
+
+    .page-header h1 {
+      margin: 0 0 12px 0;
+      font-size: clamp(28px, 4vw, 36px);
+    }
+
+    .page-header p {
+      margin: 0;
+      color: var(--sf-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 620px;
+    }
+
+    .status-card {
+      background: var(--sf-surface);
+      border-radius: var(--sf-radius);
+      padding: 18px 22px;
+      box-shadow: var(--sf-shadow);
+      margin-bottom: 26px;
+      border: 1px solid rgba(17, 24, 39, 0.06);
+    }
+
+    .status-line {
+      margin: 0;
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 28px;
+    }
+
+    .question-card {
+      background: var(--sf-surface);
+      border-radius: var(--sf-radius);
+      padding: clamp(22px, 3vw, 34px);
+      box-shadow: var(--sf-shadow);
+      border: 1px solid rgba(17, 24, 39, 0.06);
+      display: grid;
+      gap: 18px;
+    }
+
+    .question-card__header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .question-card__header h2 {
+      margin: 0;
+      font-size: 20px;
+      flex: 1;
+    }
+
+    .question-card__controls {
+      display: inline-flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      background: #fff;
+      color: var(--sf-dark);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .pill-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15, 17, 21, 0.12);
+      background: rgba(227, 6, 19, 0.05);
+    }
+
+    .pill-button[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .question-prompt {
+      margin: 0;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .question-image {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--sf-border);
+      background: #fff;
+      object-fit: contain;
+      max-height: 420px;
+    }
+
+    .targets {
+      display: grid;
+      gap: 18px;
+    }
+
+    .target-block {
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fafbff;
+    }
+
+    .target-title {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .option-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .option-button {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.18s ease, border-color 0.15s ease, background 0.15s ease;
+      min-height: 150px;
+    }
+
+    .option-button img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      background: #fff;
+    }
+
+    .option-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .option-caption {
+      font-size: 13px;
+      color: var(--sf-muted);
+      text-align: center;
+    }
+
+    .option-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(15, 17, 21, 0.1);
+      border-color: rgba(227, 6, 19, 0.35);
+    }
+
+    .option-button.selected {
+      border-color: var(--sf-red);
+      box-shadow: 0 18px 40px rgba(227, 6, 19, 0.18);
+      background: linear-gradient(135deg, rgba(227, 6, 19, 0.08), rgba(227, 6, 19, 0.02));
+    }
+
+    .option-button.correct {
+      border-color: #1d9d5c;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(255, 255, 255, 0.96));
+      box-shadow: 0 18px 40px rgba(16, 185, 129, 0.18);
+    }
+
+    .option-button.user-choice {
+      border-color: #dc2626;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.12), rgba(255, 255, 255, 0.96));
+      box-shadow: 0 18px 36px rgba(220, 38, 38, 0.16);
+    }
+
+    .hint-box,
+    .explanation-box {
+      border-radius: 16px;
+      padding: 18px 20px;
+      background: var(--sf-highlight);
+      border: 1px solid rgba(227, 6, 19, 0.18);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .hint-box h3,
+    .explanation-box h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .explanation-box {
+      background: #f0fdf4;
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+
+    .answer-summary {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .answer-line {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .answer-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .answer-value {
+      font-size: 14px;
+      color: var(--sf-dark);
+    }
+
+    .answer-detail {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: var(--sf-muted);
+    }
+
+    .text-block p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--sf-muted);
+      font-weight: 500;
+    }
+
+    .error-box {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(220, 38, 38, 0.28);
+      background: rgba(254, 226, 226, 0.9);
+      color: #991b1b;
+      font-size: 14px;
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      border-radius: var(--sf-radius);
+      border: 1px dashed rgba(17, 24, 39, 0.12);
+      background: #fff;
+      color: var(--sf-muted);
+      font-weight: 500;
+    }
+
+    @media (max-width: 720px) {
+      .page-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .page-header img {
+        justify-self: center;
+      }
+
+      .status-card {
+        margin-bottom: 20px;
+      }
+
+      .question-card {
+        padding: 22px;
+      }
+
+      .question-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .option-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="top-nav">
+      <div class="wrap">
+        <a class="back-link" href="../../index.html">← Back to Modules</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <header class="page-header">
+        <img src="../../studyfeeds-logo (1).png" alt="Study Feeds logo" />
+        <div>
+          <h1>Figural Sequences Module</h1>
+          <p>
+            Practise TestAS figural sequences by working through up to twenty questions at a time. Questions are shuffled on every
+            visit; if fewer than twenty are available, all uploaded questions are shown. Select the correct matrices for each
+            highlighted position, reveal a hint if you get stuck, and check the full explanation when you are ready.
+          </p>
+        </div>
+      </header>
+
+      <section class="status-card">
+        <p id="statusLine" class="status-line">Loading question bank…</p>
+      </section>
+
+      <section id="questionList" class="question-list" aria-live="polite">
+        <div id="loadingState" class="loading-state">Preparing tasks…</div>
+      </section>
+
+      <div id="errorMessage" class="error-box" hidden></div>
+    </main>
+  </div>
+
+  <script type="module">
+    const DATA_URL = '../../data/core/fig.json';
+    const MAX_QUESTIONS = 20;
+
+    const questionList = document.getElementById('questionList');
+    const statusLine = document.getElementById('statusLine');
+    const errorBox = document.getElementById('errorMessage');
+    const loadingState = document.getElementById('loadingState');
+
+    const normaliseId = (value) => (value === undefined || value === null ? null : String(value));
+
+    const getCorrectOptionId = (target) => {
+      if (!target) return null;
+      return normaliseId(
+        target.correct_option_id ??
+        target.correctOptionId ??
+        target.correct ??
+        target.answer ??
+        target.solution
+      );
+    };
+
+    const resolveOptionId = (option, fallback) => {
+      if (!option) return fallback;
+      return normaliseId(option.id ?? option.value ?? option.code ?? option.label ?? fallback);
+    };
+
+    const getOptionDisplay = (option) => {
+      if (!option) return '';
+      return option.display ?? option.caption ?? option.label ?? option.text ?? option.id ?? option.value ?? '';
+    };
+
+    const createTextBlock = (content, headingText) => {
+      if (!content) return null;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'text-block';
+      if (headingText) {
+        const heading = document.createElement('h3');
+        heading.textContent = headingText;
+        wrapper.prepend(heading);
+      }
+      const lines = Array.isArray(content)
+        ? content.flatMap((item) => (typeof item === 'string' ? item.split('\n') : []))
+        : String(content).split('\n');
+      lines
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+        .forEach((line) => {
+          const p = document.createElement('p');
+          p.textContent = line;
+          wrapper.appendChild(p);
+        });
+      return wrapper;
+    };
+
+    const shuffle = (array) => {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
+    const applyAnswerHighlights = (questionState, show) => {
+      questionState.targets.forEach((targetState) => {
+        targetState.buttons.forEach(({ button, optionId }) => {
+          if (!show) {
+            button.classList.remove('correct', 'user-choice');
+            return;
+          }
+          const isCorrect = targetState.correctId && optionId === targetState.correctId;
+          const userChoice = questionState.selections[targetState.id];
+          const isUserChoice = userChoice && optionId === userChoice && optionId !== targetState.correctId;
+          button.classList.toggle('correct', Boolean(isCorrect));
+          button.classList.toggle('user-choice', Boolean(isUserChoice));
+        });
+      });
+    };
+
+    const fillAnswerSummary = (container, questionState) => {
+      container.innerHTML = '';
+      questionState.targets.forEach((targetState) => {
+        const line = document.createElement('div');
+        line.className = 'answer-line';
+
+        const label = document.createElement('span');
+        label.className = 'answer-label';
+        label.textContent = targetState.label;
+
+        const value = document.createElement('span');
+        value.className = 'answer-value';
+        const correctOption = targetState.optionLookup.get(targetState.correctId ?? '');
+        value.textContent = correctOption ? getOptionDisplay(correctOption) : '—';
+
+        line.appendChild(label);
+        line.appendChild(value);
+
+        const detail = document.createElement('p');
+        detail.className = 'answer-detail';
+        detail.textContent = targetState.explanation ?? '';
+        if (detail.textContent.trim().length > 0) {
+          container.appendChild(line);
+          container.appendChild(detail);
+        } else {
+          container.appendChild(line);
+        }
+      });
+    };
+
+    const renderQuestion = (question, index) => {
+      const card = document.createElement('article');
+      card.className = 'question-card';
+
+      const headingRow = document.createElement('div');
+      headingRow.className = 'question-card__header';
+
+      const heading = document.createElement('h2');
+      heading.textContent = `Question ${index + 1}`;
+      headingRow.appendChild(heading);
+
+      const controls = document.createElement('div');
+      controls.className = 'question-card__controls';
+
+      const hintButton = document.createElement('button');
+      hintButton.type = 'button';
+      hintButton.className = 'pill-button';
+      hintButton.textContent = 'Show hint';
+
+      const explanationButton = document.createElement('button');
+      explanationButton.type = 'button';
+      explanationButton.className = 'pill-button';
+      explanationButton.textContent = 'Show explanation';
+
+      controls.appendChild(hintButton);
+      controls.appendChild(explanationButton);
+      headingRow.appendChild(controls);
+
+      const prompt = document.createElement('p');
+      prompt.className = 'question-prompt';
+      prompt.textContent = question.prompt ?? '';
+
+      const questionState = {
+        id: question.id ?? `question-${index + 1}`,
+        hintVisible: false,
+        explanationVisible: false,
+        selections: {},
+        targets: [],
+      };
+
+      const targetsWrapper = document.createElement('div');
+      targetsWrapper.className = 'targets';
+
+      const questionImagePath = question.question_image ?? question.questionImage ?? question.image;
+      if (questionImagePath) {
+        const image = document.createElement('img');
+        image.className = 'question-image';
+        image.src = questionImagePath;
+        image.alt = question.prompt ? `Diagram for: ${question.prompt}` : 'Figural sequence prompt';
+        card.appendChild(image);
+      }
+
+      card.appendChild(headingRow);
+      card.appendChild(prompt);
+
+      const hintBox = createTextBlock(question.hint, 'Hint');
+      if (hintBox) {
+        hintBox.classList.add('hint-box');
+        hintBox.hidden = true;
+      }
+
+      const explanationBox = createTextBlock(question.explanation, 'Explanation');
+      if (explanationBox) {
+        explanationBox.classList.add('explanation-box');
+        explanationBox.hidden = true;
+      }
+
+      const answerSummary = document.createElement('div');
+      answerSummary.className = 'answer-summary';
+      explanationBox?.appendChild(answerSummary);
+
+      const targets = Array.isArray(question.targets) ? question.targets : [];
+      targets.forEach((target, targetIndex) => {
+        const targetId = target.id ?? `target-${targetIndex + 1}`;
+        const targetState = {
+          id: targetId,
+          label: target.label ?? `Target ${targetIndex + 1}`,
+          correctId: getCorrectOptionId(target),
+          explanation: target.answer_explanation ?? target.explanation ?? '',
+          optionLookup: new Map(),
+          buttons: [],
+        };
+
+        const block = document.createElement('section');
+        block.className = 'target-block';
+
+        const title = document.createElement('h3');
+        title.className = 'target-title';
+        title.textContent = targetState.label;
+        block.appendChild(title);
+
+        const options = Array.isArray(target.options) ? target.options : [];
+        if (!options.length) {
+          const warning = document.createElement('p');
+          warning.className = 'answer-detail';
+          warning.textContent = 'No options have been uploaded for this target yet.';
+          block.appendChild(warning);
+        } else {
+          const optionGrid = document.createElement('div');
+          optionGrid.className = 'option-grid';
+
+          options.forEach((option, optionIndex) => {
+            const optionId = resolveOptionId(option, `${targetId}-option-${optionIndex + 1}`);
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'option-button';
+            button.dataset.optionId = optionId;
+            button.setAttribute('aria-pressed', 'false');
+
+            const label = document.createElement('span');
+            label.className = 'option-label';
+            label.textContent = getOptionDisplay(option);
+            button.appendChild(label);
+
+            const optionImagePath = option.image_url ?? option.imageUrl ?? option.image;
+            if (optionImagePath) {
+              const optionImg = document.createElement('img');
+              optionImg.src = optionImagePath;
+              optionImg.alt = option.alt ?? option.label ?? optionId;
+              button.appendChild(optionImg);
+            } else if (option.text) {
+              const caption = document.createElement('span');
+              caption.className = 'option-caption';
+              caption.textContent = option.text;
+              button.appendChild(caption);
+            } else if (option.caption) {
+              const caption = document.createElement('span');
+              caption.className = 'option-caption';
+              caption.textContent = option.caption;
+              button.appendChild(caption);
+            }
+
+            button.addEventListener('click', () => {
+              targetState.buttons.forEach(({ button: peer }) => {
+                const isSelected = peer === button;
+                peer.classList.toggle('selected', isSelected);
+                peer.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+              });
+              questionState.selections[targetState.id] = optionId;
+              if (questionState.explanationVisible) {
+                applyAnswerHighlights(questionState, true);
+              }
+            });
+
+            optionGrid.appendChild(button);
+            targetState.buttons.push({ button, optionId });
+            targetState.optionLookup.set(optionId, option);
+          });
+
+          block.appendChild(optionGrid);
+        }
+
+        targetsWrapper.appendChild(block);
+        questionState.targets.push(targetState);
+      });
+
+      card.appendChild(targetsWrapper);
+
+      if (hintBox) {
+        card.appendChild(hintBox);
+      }
+
+      if (explanationBox) {
+        card.appendChild(explanationBox);
+      }
+
+      hintButton.addEventListener('click', () => {
+        questionState.hintVisible = !questionState.hintVisible;
+        if (hintBox) {
+          hintBox.hidden = !questionState.hintVisible;
+          hintButton.textContent = questionState.hintVisible ? 'Hide hint' : 'Show hint';
+        }
+      });
+
+      explanationButton.addEventListener('click', () => {
+        questionState.explanationVisible = !questionState.explanationVisible;
+        if (explanationBox) {
+          explanationBox.hidden = !questionState.explanationVisible;
+          explanationButton.textContent = questionState.explanationVisible ? 'Hide explanation' : 'Show explanation';
+          if (questionState.explanationVisible) {
+            applyAnswerHighlights(questionState, true);
+            fillAnswerSummary(answerSummary, questionState);
+          } else {
+            applyAnswerHighlights(questionState, false);
+            answerSummary.innerHTML = '';
+          }
+        }
+      });
+
+      questionList.appendChild(card);
+    };
+
+    const loadQuestions = async () => {
+      try {
+        const response = await fetch(DATA_URL, { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`Unable to fetch question bank (HTTP ${response.status})`);
+        }
+        const data = await response.json();
+        const allQuestions = Array.isArray(data.questions) ? data.questions : [];
+
+        if (loadingState) {
+          loadingState.remove();
+        }
+
+        if (!allQuestions.length) {
+          statusLine.textContent = 'No figural sequence questions have been uploaded yet.';
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.textContent = 'Add question entries to data/core/fig.json to start practising.';
+          questionList.appendChild(empty);
+          return;
+        }
+
+        const selected = shuffle(allQuestions).slice(0, Math.min(MAX_QUESTIONS, allQuestions.length));
+        const countText = `${selected.length} of ${allQuestions.length} uploaded question${allQuestions.length === 1 ? '' : 's'}`;
+        statusLine.textContent = `Displaying ${countText}. Refresh the page to load a new random set.`;
+
+        selected.forEach((question, index) => renderQuestion(question, index));
+      } catch (error) {
+        console.error(error);
+        statusLine.textContent = 'Unable to load questions right now.';
+        errorBox.hidden = false;
+        errorBox.textContent = error.message ?? 'Something went wrong while fetching the questions.';
+        if (loadingState) {
+          loadingState.textContent = 'Unable to load questions.';
+        }
+      }
+    };
+
+    loadQuestions();
+  </script>
+</body>
+</html>
