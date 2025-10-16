@@ -49,6 +49,87 @@
       padding: 22px 0 10px;
     }
 
+    .top-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .auth-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-panel .btn {
+      font-size: 13px;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .auth-panel .btn.is-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(17, 24, 39, 0.08);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+
+    .user-chip__meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .user-chip__meta strong {
+      font-size: 13px;
+    }
+
+    .user-chip__meta small {
+      font-size: 11px;
+      color: var(--sf-muted);
+    }
+
+    .user-chip__signout {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .user-chip__admin {
+      font-size: 11px;
+      color: var(--sf-muted);
+    }
+
+    .auth-status-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px 10px;
+    }
+
+    .auth-status {
+      margin: 0;
+      padding: 8px 12px;
+      background: rgba(17, 24, 39, 0.08);
+      border-radius: 12px;
+      font-size: 12px;
+      color: var(--sf-muted);
+      text-align: right;
+    }
+
     .wrap {
       width: 100%;
       max-width: 1080px;
@@ -71,6 +152,22 @@
     .back-link:hover {
       transform: translateY(-1px);
       background: rgba(17, 24, 39, 0.12);
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(15, 17, 21, 0.12);
     }
 
     .page-header {
@@ -110,6 +207,47 @@
       box-shadow: var(--sf-shadow);
       margin-bottom: 26px;
       border: 1px solid rgba(17, 24, 39, 0.06);
+    }
+
+    .access-notice {
+      margin: 20px 0;
+      padding: 18px 20px;
+      border-radius: 16px;
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      color: #b91c1c;
+      font-weight: 500;
+    }
+
+    .admin-tools {
+      margin: 0 0 26px 0;
+      padding: 20px 22px;
+      border-radius: 16px;
+      background: #fff4f4;
+      border: 1px solid rgba(227, 6, 19, 0.2);
+      box-shadow: var(--sf-shadow);
+    }
+
+    .admin-tools h2 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .admin-tools p {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      color: var(--sf-muted);
+    }
+
+    .admin-tools ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+      color: var(--sf-muted);
+    }
+
+    .admin-tools li {
+      margin-bottom: 6px;
     }
 
     .status-line {
@@ -376,6 +514,22 @@
         margin-bottom: 20px;
       }
 
+      .top-nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .user-chip {
+        width: 100%;
+        justify-content: space-between;
+      }
+
       .question-card {
         padding: 22px;
       }
@@ -394,8 +548,24 @@
 <body>
   <div class="page">
     <nav class="top-nav">
-      <div class="wrap">
+      <div class="wrap top-nav-inner">
         <a class="back-link" href="../../index.html">← Back to Modules</a>
+        <div class="nav-actions">
+          <div class="auth-panel">
+            <button class="btn" data-auth-sign-in>Sign in</button>
+            <div class="user-chip" data-auth-user hidden>
+              <div class="user-chip__meta">
+                <strong data-auth-name>Guest</strong>
+                <small data-auth-role>Guest</small>
+              </div>
+              <small class="user-chip__admin" data-admin-id hidden></small>
+              <button class="btn user-chip__signout" data-auth-sign-out>Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-status-wrap">
+        <p class="auth-status" data-auth-status hidden></p>
       </div>
     </nav>
 
@@ -416,6 +586,20 @@
         <p id="statusLine" class="status-line">Loading question bank…</p>
       </section>
 
+      <section id="accessNotice" class="access-notice" hidden>
+        Access restricted. Sign in with a member, staff, or admin account to continue.
+      </section>
+
+      <section id="adminTools" class="admin-tools" data-requires-role="admin" hidden>
+        <h2>Admin quick actions</h2>
+        <p>Use these shortcuts to maintain the figural sequences bank:</p>
+        <ul>
+          <li>Upload new matrix sets to <code>data/core/fig.json</code>.</li>
+          <li>Archive outdated prompts after publishing updated explanations.</li>
+          <li>Share the admin ID with trusted staff only: <span data-admin-id></span>.</li>
+        </ul>
+      </section>
+
       <section id="questionList" class="question-list" aria-live="polite">
         <div id="loadingState" class="loading-state">Preparing tasks…</div>
       </section>
@@ -424,14 +608,63 @@
     </main>
   </div>
 
+  <script type="module" src="../../scripts/auth-controller.js"></script>
   <script type="module">
+    import { requireRole, subscribeToAuthChanges } from '../../scripts/auth.js';
+
     const DATA_URL = '../../data/core/fig.json';
     const MAX_QUESTIONS = 20;
+    const ALLOWED_ROLES = ['admin', 'staff', 'member'];
 
     const questionList = document.getElementById('questionList');
     const statusLine = document.getElementById('statusLine');
     const errorBox = document.getElementById('errorMessage');
     const loadingState = document.getElementById('loadingState');
+    const accessNotice = document.getElementById('accessNotice');
+    let hasLoadedQuestions = false;
+    let hasAccess = false;
+
+    const renderAccessNotice = (message) => {
+      if (!accessNotice) return;
+      if (message) {
+        accessNotice.textContent = message;
+        accessNotice.hidden = false;
+      } else {
+        accessNotice.hidden = true;
+      }
+    };
+
+    const showAccessDenied = (state) => {
+      const role = (state.profile?.role ?? 'guest').toLowerCase();
+      const message = state.user
+        ? `Your ${role} account does not have permission to open this module.`
+        : 'Sign in with a member, staff, or admin account to continue.';
+      renderAccessNotice(message);
+      if (statusLine) {
+        statusLine.textContent = 'Access restricted to member accounts and above.';
+      }
+      if (loadingState) {
+        loadingState.textContent = 'Restricted content. Sign in to continue.';
+      }
+      if (questionList) {
+        questionList.innerHTML = '';
+      }
+      hasAccess = false;
+      hasLoadedQuestions = false;
+    };
+
+    const showAccessGranted = () => {
+      renderAccessNotice('');
+      hasAccess = true;
+      if (statusLine && statusLine.textContent.startsWith('Access restricted')) {
+        statusLine.textContent = 'Loading question bank…';
+      }
+    };
+
+    const ensureQuestions = async () => {
+      if (!hasAccess || hasLoadedQuestions) return;
+      await loadQuestions();
+    };
 
     const normaliseId = (value) => (value === undefined || value === null ? null : String(value));
 
@@ -727,6 +960,7 @@
     };
 
     const loadQuestions = async () => {
+      if (!hasAccess) return;
       try {
         const response = await fetch(DATA_URL, { cache: 'no-store' });
         if (!response.ok) {
@@ -753,6 +987,7 @@
         statusLine.textContent = `Displaying ${countText}. Refresh the page to load a new random set.`;
 
         selected.forEach((question, index) => renderQuestion(question, index));
+        hasLoadedQuestions = true;
       } catch (error) {
         console.error(error);
         statusLine.textContent = 'Unable to load questions right now.';
@@ -761,10 +996,29 @@
         if (loadingState) {
           loadingState.textContent = 'Unable to load questions.';
         }
+        hasLoadedQuestions = false;
       }
     };
 
-    loadQuestions();
+    subscribeToAuthChanges((state) => {
+      const role = (state.profile?.role ?? 'guest').toLowerCase();
+      const allowed = ALLOWED_ROLES.includes(role);
+      if (!allowed) {
+        showAccessDenied(state);
+      } else {
+        showAccessGranted();
+        ensureQuestions();
+      }
+    }, { emitCurrent: false });
+
+    const initialCheck = await requireRole(ALLOWED_ROLES, {
+      onDenied: showAccessDenied,
+    });
+
+    if (initialCheck.allowed) {
+      showAccessGranted();
+      await ensureQuestions();
+    }
   </script>
 </body>
 </html>

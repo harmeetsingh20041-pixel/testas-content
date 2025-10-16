@@ -1,0 +1,29 @@
+{
+  "adminId": "sf-admin-001",
+  "users": [
+    {
+      "uid": "demo-admin-uid",
+      "email": "admin@studyfeeds.io",
+      "role": "admin",
+      "displayName": "Demo Admin"
+    },
+    {
+      "uid": "demo-staff-uid",
+      "email": "coach@studyfeeds.io",
+      "role": "staff",
+      "displayName": "Coaching Staff"
+    },
+    {
+      "uid": "demo-member-uid",
+      "email": "member@example.com",
+      "role": "member",
+      "displayName": "Member Learner"
+    },
+    {
+      "uid": "demo-student-uid",
+      "email": "student@example.com",
+      "role": "student",
+      "displayName": "Student User"
+    }
+  ]
+}
