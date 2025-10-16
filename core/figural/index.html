@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Latin Squares Module • Study Feeds TestAS Practice</title>
+  <title>Figural Sequences Module • Study Feeds TestAS Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -401,11 +401,11 @@
 
     <main class="wrap">
       <header class="page-header">
-        <img src="./studyfeeds-logo (1).png" alt="Study Feeds logo" />
+        <img src="../../studyfeeds-logo (1).png" alt="Study Feeds logo" />
         <div>
-          <h1>Latin Squares Module</h1>
+          <h1>Figural Sequences Module</h1>
           <p>
-            Practise TestAS Latin squares by working through up to twenty questions at a time. Questions are shuffled on every
+            Practise TestAS figural sequences by working through up to twenty questions at a time. Questions are shuffled on every
             visit; if fewer than twenty are available, all uploaded questions are shown. Select the correct matrices for each
             highlighted position, reveal a hint if you get stuck, and check the full explanation when you are ready.
           </p>
@@ -425,7 +425,7 @@
   </div>
 
   <script type="module">
-    const DATA_URL = '../../data/core/latin.json';
+    const DATA_URL = '../../data/core/fig.json';
     const MAX_QUESTIONS = 20;
 
     const questionList = document.getElementById('questionList');
@@ -521,225 +521,208 @@
 
         line.appendChild(label);
         line.appendChild(value);
-        container.appendChild(line);
 
-        const detailText = targetState.target.answer_explanation ?? targetState.target.answerExplanation;
-        if (detailText) {
-          const detail = document.createElement('p');
-          detail.className = 'answer-detail';
-          detail.textContent = detailText;
+        const detail = document.createElement('p');
+        detail.className = 'answer-detail';
+        detail.textContent = targetState.explanation ?? '';
+        if (detail.textContent.trim().length > 0) {
+          container.appendChild(line);
           container.appendChild(detail);
+        } else {
+          container.appendChild(line);
         }
       });
     };
 
     const renderQuestion = (question, index) => {
-      const questionId = normaliseId(question.id) ?? `question-${index + 1}`;
       const card = document.createElement('article');
       card.className = 'question-card';
-      card.dataset.questionId = questionId;
 
-      const header = document.createElement('div');
-      header.className = 'question-card__header';
+      const headingRow = document.createElement('div');
+      headingRow.className = 'question-card__header';
 
-      const title = document.createElement('h2');
-      title.textContent = `Question ${index + 1}`;
-      header.appendChild(title);
+      const heading = document.createElement('h2');
+      heading.textContent = `Question ${index + 1}`;
+      headingRow.appendChild(heading);
 
       const controls = document.createElement('div');
       controls.className = 'question-card__controls';
 
-      const questionState = {
-        id: questionId,
-        explanationVisible: false,
-        selections: {},
-        targets: []
-      };
-
-      const hintContent = question.hint ?? question.tip;
-      let hintBox = null;
-      if (hintContent) {
-        hintBox = document.createElement('div');
-        hintBox.className = 'hint-box';
-        hintBox.hidden = true;
-        const heading = document.createElement('h3');
-        heading.textContent = 'Hint';
-        hintBox.appendChild(heading);
-        const hintTextBlock = createTextBlock(hintContent);
-        if (hintTextBlock) {
-          hintBox.appendChild(hintTextBlock);
-        }
-      }
-
-      if (hintBox) {
-        const hintButton = document.createElement('button');
-        hintButton.type = 'button';
-        hintButton.className = 'pill-button';
-        hintButton.textContent = 'Show hint';
-        hintButton.setAttribute('aria-expanded', 'false');
-        hintButton.addEventListener('click', () => {
-          const show = hintBox.hidden;
-          hintBox.hidden = !show;
-          hintButton.textContent = show ? 'Hide hint' : 'Show hint';
-          hintButton.setAttribute('aria-expanded', show ? 'true' : 'false');
-        });
-        controls.appendChild(hintButton);
-      }
-
-      const explanationBox = document.createElement('div');
-      explanationBox.className = 'explanation-box';
-      explanationBox.hidden = true;
-
-      const explanationHeading = document.createElement('h3');
-      explanationHeading.textContent = 'Explanation';
-      explanationBox.appendChild(explanationHeading);
-
-      const answerSummary = document.createElement('div');
-      answerSummary.className = 'answer-summary';
-      explanationBox.appendChild(answerSummary);
-
-      const explanationTextBlock = createTextBlock(question.explanation ?? question.analysis ?? question.solution);
-      if (explanationTextBlock) {
-        explanationBox.appendChild(explanationTextBlock);
-      }
+      const hintButton = document.createElement('button');
+      hintButton.type = 'button';
+      hintButton.className = 'pill-button';
+      hintButton.textContent = 'Show hint';
 
       const explanationButton = document.createElement('button');
       explanationButton.type = 'button';
       explanationButton.className = 'pill-button';
       explanationButton.textContent = 'Show explanation';
-      explanationButton.setAttribute('aria-expanded', 'false');
-      explanationButton.addEventListener('click', () => {
-        const show = explanationBox.hidden;
-        explanationBox.hidden = !show;
-        questionState.explanationVisible = show;
-        explanationButton.textContent = show ? 'Hide explanation' : 'Show explanation';
-        explanationButton.setAttribute('aria-expanded', show ? 'true' : 'false');
-        if (show) {
-          fillAnswerSummary(answerSummary, questionState);
-        }
-        applyAnswerHighlights(questionState, show);
-      });
 
+      controls.appendChild(hintButton);
       controls.appendChild(explanationButton);
-      header.appendChild(controls);
-      card.appendChild(header);
+      headingRow.appendChild(controls);
 
       const prompt = document.createElement('p');
       prompt.className = 'question-prompt';
-      prompt.textContent = question.prompt ?? question.stem ?? 'Select the correct option for each image.';
-      card.appendChild(prompt);
+      prompt.textContent = question.prompt ?? '';
 
-      const questionImagePath = question.question_image ?? question.figure ?? question.image_url ?? question.imageUrl ?? '';
+      const questionState = {
+        id: question.id ?? `question-${index + 1}`,
+        hintVisible: false,
+        explanationVisible: false,
+        selections: {},
+        targets: [],
+      };
+
+      const targetsWrapper = document.createElement('div');
+      targetsWrapper.className = 'targets';
+
+      const questionImagePath = question.question_image ?? question.questionImage ?? question.image;
       if (questionImagePath) {
         const image = document.createElement('img');
         image.className = 'question-image';
         image.src = questionImagePath;
-        image.alt = question.question_image_alt ?? question.figure_alt ?? question.prompt ?? 'Latin squares question';
+        image.alt = question.prompt ? `Diagram for: ${question.prompt}` : 'Figural sequence prompt';
         card.appendChild(image);
       }
 
-      const targetsData = Array.isArray(question.targets) ? question.targets : [];
-      if (!targetsData.length) {
-        const empty = document.createElement('div');
-        empty.className = 'empty-state';
-        empty.textContent = 'This question does not have any answer targets yet.';
-        card.appendChild(empty);
-      } else {
-        const targetsWrapper = document.createElement('div');
-        targetsWrapper.className = 'targets';
+      card.appendChild(headingRow);
+      card.appendChild(prompt);
 
-        targetsData.forEach((target, targetIndex) => {
-          const targetId = normaliseId(target.id) ?? `${questionId}-target-${targetIndex + 1}`;
-          const targetState = {
-            id: targetId,
-            label: target.label ?? `Blank ${targetIndex + 1}`,
-            correctId: getCorrectOptionId(target),
-            buttons: [],
-            optionLookup: new Map(),
-            target
-          };
+      const hintBox = createTextBlock(question.hint, 'Hint');
+      if (hintBox) {
+        hintBox.classList.add('hint-box');
+        hintBox.hidden = true;
+      }
 
-          const block = document.createElement('section');
-          block.className = 'target-block';
+      const explanationBox = createTextBlock(question.explanation, 'Explanation');
+      if (explanationBox) {
+        explanationBox.classList.add('explanation-box');
+        explanationBox.hidden = true;
+      }
 
-          const title = document.createElement('h3');
-          title.className = 'target-title';
-          title.textContent = targetState.label;
-          block.appendChild(title);
+      const answerSummary = document.createElement('div');
+      answerSummary.className = 'answer-summary';
+      explanationBox?.appendChild(answerSummary);
 
-          const options = Array.isArray(target.options) ? target.options : [];
-          if (!options.length) {
-            const warning = document.createElement('p');
-            warning.className = 'answer-detail';
-            warning.textContent = 'No options have been uploaded for this target yet.';
-            block.appendChild(warning);
-          } else {
-            const optionGrid = document.createElement('div');
-            optionGrid.className = 'option-grid';
+      const targets = Array.isArray(question.targets) ? question.targets : [];
+      targets.forEach((target, targetIndex) => {
+        const targetId = target.id ?? `target-${targetIndex + 1}`;
+        const targetState = {
+          id: targetId,
+          label: target.label ?? `Target ${targetIndex + 1}`,
+          correctId: getCorrectOptionId(target),
+          explanation: target.answer_explanation ?? target.explanation ?? '',
+          optionLookup: new Map(),
+          buttons: [],
+        };
 
-            options.forEach((option, optionIndex) => {
-              const optionId = resolveOptionId(option, `${targetId}-option-${optionIndex + 1}`);
-              const button = document.createElement('button');
-              button.type = 'button';
-              button.className = 'option-button';
-              button.dataset.optionId = optionId;
-              button.setAttribute('aria-pressed', 'false');
+        const block = document.createElement('section');
+        block.className = 'target-block';
 
-              const label = document.createElement('span');
-              label.className = 'option-label';
-              label.textContent = getOptionDisplay(option);
-              button.appendChild(label);
+        const title = document.createElement('h3');
+        title.className = 'target-title';
+        title.textContent = targetState.label;
+        block.appendChild(title);
 
-              const optionImagePath = option.image_url ?? option.imageUrl ?? option.image;
-              if (optionImagePath) {
-                const optionImg = document.createElement('img');
-                optionImg.src = optionImagePath;
-                optionImg.alt = option.alt ?? option.label ?? optionId;
-                button.appendChild(optionImg);
-              } else if (option.text) {
-                const caption = document.createElement('span');
-                caption.className = 'option-caption';
-                caption.textContent = option.text;
-                button.appendChild(caption);
-              } else if (option.caption) {
-                const caption = document.createElement('span');
-                caption.className = 'option-caption';
-                caption.textContent = option.caption;
-                button.appendChild(caption);
-              }
+        const options = Array.isArray(target.options) ? target.options : [];
+        if (!options.length) {
+          const warning = document.createElement('p');
+          warning.className = 'answer-detail';
+          warning.textContent = 'No options have been uploaded for this target yet.';
+          block.appendChild(warning);
+        } else {
+          const optionGrid = document.createElement('div');
+          optionGrid.className = 'option-grid';
 
-              button.addEventListener('click', () => {
-                targetState.buttons.forEach(({ button: peer }) => {
-                  const isSelected = peer === button;
-                  peer.classList.toggle('selected', isSelected);
-                  peer.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
-                });
-                questionState.selections[targetState.id] = optionId;
-                if (questionState.explanationVisible) {
-                  applyAnswerHighlights(questionState, true);
-                }
+          options.forEach((option, optionIndex) => {
+            const optionId = resolveOptionId(option, `${targetId}-option-${optionIndex + 1}`);
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'option-button';
+            button.dataset.optionId = optionId;
+            button.setAttribute('aria-pressed', 'false');
+
+            const label = document.createElement('span');
+            label.className = 'option-label';
+            label.textContent = getOptionDisplay(option);
+            button.appendChild(label);
+
+            const optionImagePath = option.image_url ?? option.imageUrl ?? option.image;
+            if (optionImagePath) {
+              const optionImg = document.createElement('img');
+              optionImg.src = optionImagePath;
+              optionImg.alt = option.alt ?? option.label ?? optionId;
+              button.appendChild(optionImg);
+            } else if (option.text) {
+              const caption = document.createElement('span');
+              caption.className = 'option-caption';
+              caption.textContent = option.text;
+              button.appendChild(caption);
+            } else if (option.caption) {
+              const caption = document.createElement('span');
+              caption.className = 'option-caption';
+              caption.textContent = option.caption;
+              button.appendChild(caption);
+            }
+
+            button.addEventListener('click', () => {
+              targetState.buttons.forEach(({ button: peer }) => {
+                const isSelected = peer === button;
+                peer.classList.toggle('selected', isSelected);
+                peer.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
               });
-
-              optionGrid.appendChild(button);
-              targetState.buttons.push({ button, optionId });
-              targetState.optionLookup.set(optionId, option);
+              questionState.selections[targetState.id] = optionId;
+              if (questionState.explanationVisible) {
+                applyAnswerHighlights(questionState, true);
+              }
             });
 
-            block.appendChild(optionGrid);
-          }
+            optionGrid.appendChild(button);
+            targetState.buttons.push({ button, optionId });
+            targetState.optionLookup.set(optionId, option);
+          });
 
-          targetsWrapper.appendChild(block);
-          questionState.targets.push(targetState);
-        });
+          block.appendChild(optionGrid);
+        }
 
-        card.appendChild(targetsWrapper);
-      }
+        targetsWrapper.appendChild(block);
+        questionState.targets.push(targetState);
+      });
+
+      card.appendChild(targetsWrapper);
 
       if (hintBox) {
         card.appendChild(hintBox);
       }
 
-      card.appendChild(explanationBox);
+      if (explanationBox) {
+        card.appendChild(explanationBox);
+      }
+
+      hintButton.addEventListener('click', () => {
+        questionState.hintVisible = !questionState.hintVisible;
+        if (hintBox) {
+          hintBox.hidden = !questionState.hintVisible;
+          hintButton.textContent = questionState.hintVisible ? 'Hide hint' : 'Show hint';
+        }
+      });
+
+      explanationButton.addEventListener('click', () => {
+        questionState.explanationVisible = !questionState.explanationVisible;
+        if (explanationBox) {
+          explanationBox.hidden = !questionState.explanationVisible;
+          explanationButton.textContent = questionState.explanationVisible ? 'Hide explanation' : 'Show explanation';
+          if (questionState.explanationVisible) {
+            applyAnswerHighlights(questionState, true);
+            fillAnswerSummary(answerSummary, questionState);
+          } else {
+            applyAnswerHighlights(questionState, false);
+            answerSummary.innerHTML = '';
+          }
+        }
+      });
+
       questionList.appendChild(card);
     };
 
@@ -757,10 +740,10 @@
         }
 
         if (!allQuestions.length) {
-          statusLine.textContent = 'No Latin squares questions have been uploaded yet.';
+          statusLine.textContent = 'No figural sequence questions have been uploaded yet.';
           const empty = document.createElement('div');
           empty.className = 'empty-state';
-          empty.textContent = 'Add question entries to data/core/latin.json to start practising.';
+          empty.textContent = 'Add question entries to data/core/fig.json to start practising.';
           questionList.appendChild(empty);
           return;
         }
